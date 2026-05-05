@@ -3259,16 +3259,26 @@ const app = {
 
   // Recherche de référence
   searchRef(val) {
+    // Fermer la liste picker si ouverte
+    const listePicker = document.getElementById('liste-picker');
+    if (listePicker && listePicker.classList.contains('active')) {
+      listePicker.classList.remove('active');
+    }
+    
     const result = document.getElementById('ref-result');
     val = val.trim().toUpperCase();
     
     if (!val) {
       result.textContent = '';
       result.className = 'ref-result';
+      result.style.display = 'none';
       this.hideUniteToggle();
       this.state.currentProd = null;
       return;
     }
+    
+    // Réafficher result pour la nouvelle recherche
+    result.style.display = 'block';
     
     const prod = DATA.PRODUITS.find(p => p.ref.toUpperCase() === val);
     
@@ -3600,14 +3610,23 @@ const app = {
     // Fermer le modal
     this.closeConfirmProduct();
     
+    // Fermer la liste picker
+    const listePicker = document.getElementById('liste-picker');
+    if (listePicker) {
+      listePicker.classList.remove('active');
+    }
+    
     // Reset les champs
     document.getElementById('ref-input').value = '';
-    document.getElementById('ref-result').textContent = '';
-    document.getElementById('ref-result').className = 'ref-result';
+    const refResult = document.getElementById('ref-result');
+    refResult.textContent = '';
+    refResult.className = 'ref-result';
+    refResult.style.display = 'none';
     document.getElementById('qty-input').value = '1';
     document.getElementById('obs-input').value = '';
     this.hideUniteToggle();
     this.state.currentProd = null;
+    this.state.tempProduct = null;
     
     this.renderCart();
     this.updatePanierBadges();
