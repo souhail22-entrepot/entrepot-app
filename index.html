@@ -2217,8 +2217,8 @@ body {
   to { transform: rotate(360deg); }
 }
 
-/* BOUTON PANIER HEADER */
-.panier-toggle {
+/* BADGE PANIER HEADER */
+.header-panier-btn {
   position: relative;
   width: 50px;
   height: 50px;
@@ -2234,18 +2234,18 @@ body {
   color: var(--text-primary);
 }
 
-.panier-toggle:hover {
+.header-panier-btn:hover {
   background: var(--accent);
   border-color: var(--accent);
   color: white;
   transform: scale(1.05);
 }
 
-.panier-toggle:active {
+.header-panier-btn:active {
   transform: scale(0.95);
 }
 
-.panier-badge {
+.header-panier-badge {
   position: absolute;
   top: -4px;
   right: -4px;
@@ -2260,209 +2260,166 @@ body {
   display: none;
 }
 
-.panier-badge:not(:empty) {
+.header-panier-badge:not(:empty) {
   display: block;
-  animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  animation: popBadge 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-@keyframes popIn {
+@keyframes popBadge {
   0% { transform: scale(0); }
   50% { transform: scale(1.2); }
   100% { transform: scale(1); }
 }
 
-/* MODAL PANIER */
-.panier-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1000;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.panier-modal.active {
-  display: flex;
-}
-
-.panier-modal-overlay {
+/* BADGE NAVIGATION PANIER */
+.nav-badge {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
+  top: 4px;
+  right: 4px;
+  background: #ff4444;
+  color: white;
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  text-align: center;
+  display: none;
 }
 
-.panier-modal-content {
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  max-height: 80vh;
-  background: var(--bg-card);
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  animation: slideUp 0.3s ease;
+.nav-badge:not(:empty) {
+  display: block;
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.panier-modal-header {
-  padding: 20px;
-  border-bottom: 1px solid var(--border);
+/* PAGE PANIER */
+.panier-page-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: var(--bg-primary);
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border);
 }
 
-.panier-modal-header h2 {
+.panier-page-header h2 {
   margin: 0;
-  font-size: 24px;
-  flex: 1;
+  font-size: 28px;
+  font-weight: 700;
 }
 
-.panier-count {
-  color: var(--text-secondary);
+.panier-page-count {
   font-size: 14px;
-  padding: 4px 12px;
+  color: var(--text-secondary);
+  padding: 6px 12px;
   background: var(--bg-input);
   border-radius: 12px;
+  font-weight: 600;
 }
 
-.panier-close {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid var(--border);
-  background: var(--bg-input);
-  font-size: 20px;
-  cursor: pointer;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-}
-
-.panier-close:hover {
-  background: #ff4444;
-  border-color: #ff4444;
-  color: white;
-  transform: rotate(90deg);
-}
-
-.panier-modal-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-}
-
-.panier-vide {
+/* PANIER VIDE */
+.panier-page-vide {
   text-align: center;
-  padding: 60px 20px;
+  padding: 80px 20px;
   color: var(--text-secondary);
 }
 
-.panier-vide-icon {
-  font-size: 64px;
-  margin-bottom: 16px;
+.panier-page-vide-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
   opacity: 0.5;
 }
 
-.panier-vide p {
-  margin: 8px 0;
-  font-size: 18px;
-  font-weight: 500;
+.panier-page-vide p {
+  margin: 12px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
-.panier-vide small {
+.panier-page-vide small {
   font-size: 14px;
   opacity: 0.7;
+  display: block;
+  margin-bottom: 30px;
 }
 
-.panier-items {
+.panier-page-vide .btn-primary {
+  margin-top: 20px;
+  padding: 14px 28px;
+  font-size: 16px;
+}
+
+/* LISTE PANIER PAGE */
+.panier-page-liste {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-bottom: 20px;
 }
 
-.panier-item {
+.panier-page-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px;
+  padding: 14px;
   background: var(--bg-input);
   border: 2px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   transition: var(--transition);
 }
 
-.panier-item:hover {
+.panier-page-item:hover {
   border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.panier-item-photo {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
+.panier-page-item-photo {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
   object-fit: cover;
   background: var(--bg-card);
   flex-shrink: 0;
+  border: 2px solid var(--border);
 }
 
-.panier-item-info {
+.panier-page-item-info {
   flex: 1;
   min-width: 0;
 }
 
-.panier-item-code {
-  font-size: 12px;
+.panier-page-item-code {
+  font-size: 13px;
   color: var(--accent);
   font-weight: 700;
   font-family: var(--font-mono);
+  margin-bottom: 4px;
 }
 
-.panier-item-nom {
-  font-size: 14px;
-  font-weight: 500;
-  margin: 4px 0;
+.panier-page-item-nom {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--text-primary);
 }
 
-.panier-item-controls {
+.panier-page-item-controls {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 10px;
 }
 
-.panier-qty-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+.panier-page-qty-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   border: 2px solid var(--border);
   background: var(--bg-card);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
@@ -2472,40 +2429,41 @@ body {
   color: var(--text-primary);
 }
 
-.panier-qty-btn:hover {
+.panier-page-qty-btn:hover {
   border-color: var(--accent);
   background: var(--accent);
   color: white;
 }
 
-.panier-qty-btn:active {
+.panier-page-qty-btn:active {
   transform: scale(0.9);
 }
 
-.panier-qty-value {
-  min-width: 40px;
+.panier-page-qty-value {
+  min-width: 45px;
   text-align: center;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 18px;
   font-family: var(--font-mono);
   color: var(--text-primary);
 }
 
-.panier-item-unite {
-  font-size: 12px;
+.panier-page-item-unite {
+  font-size: 13px;
   color: var(--text-secondary);
-  padding: 4px 8px;
+  padding: 5px 10px;
   background: var(--bg-card);
-  border-radius: 6px;
+  border-radius: 8px;
+  font-weight: 500;
 }
 
-.panier-item-delete {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+.panier-page-item-delete {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   border: 2px solid var(--border);
   background: var(--bg-card);
-  font-size: 18px;
+  font-size: 20px;
   cursor: pointer;
   transition: var(--transition);
   flex-shrink: 0;
@@ -2514,45 +2472,59 @@ body {
   justify-content: center;
 }
 
-.panier-item-delete:hover {
+.panier-page-item-delete:hover {
   background: #ff4444;
   border-color: #ff4444;
   color: white;
-  transform: rotate(10deg);
+  transform: rotate(10deg) scale(1.1);
 }
 
-.panier-modal-footer {
-  padding: 16px;
-  border-top: 1px solid var(--border);
-  display: flex;
+/* ACTIONS PANIER */
+.panier-page-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 12px;
-  background: var(--bg-primary);
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px solid var(--border);
 }
 
-.panier-modal-footer button {
-  flex: 1;
+.panier-page-actions button {
   padding: 14px;
   border-radius: 12px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
+  border: 2px solid;
+}
+
+.btn-danger {
+  border-color: #ff4444;
+  background: var(--bg-input);
+  color: #ff4444;
+}
+
+.btn-danger:hover {
+  background: #ff4444;
+  color: white;
+  transform: translateY(-2px);
 }
 
 .btn-secondary {
-  border: 2px solid var(--border);
+  border-color: var(--border);
   background: var(--bg-input);
   color: var(--text-primary);
 }
 
 .btn-secondary:hover {
-  border-color: #ff4444;
-  background: #ff4444;
-  color: white;
+  border-color: var(--accent);
+  background: var(--bg-card);
+  transform: translateY(-2px);
 }
 
 .btn-primary {
-  border: 2px solid var(--accent);
+  border-color: var(--accent);
   background: var(--accent);
   color: white;
 }
@@ -2560,31 +2532,28 @@ body {
 .btn-primary:hover {
   background: var(--accent);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--accent-glow);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
+  box-shadow: 0 4px 16px var(--accent-glow);
 }
 
 @media (max-width: 480px) {
-  .panier-modal-content {
-    max-height: 85vh;
+  .panier-page-actions {
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
   
-  .panier-item {
-    padding: 10px;
+  .panier-page-item {
+    padding: 12px;
   }
   
-  .panier-item-photo {
-    width: 50px;
-    height: 50px;
+  .panier-page-item-photo {
+    width: 60px;
+    height: 60px;
   }
   
-  .panier-qty-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 16px;
+  .panier-page-qty-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
   }
 }
 </style>
@@ -2653,12 +2622,12 @@ body {
   </div>
   <div class="header-actions">
     <span id="status-badge" class="badge badge-offline">Hors ligne</span>
+    <button class="header-panier-btn" onclick="app.goToPanier()" title="Voir le panier">
+      🛒
+      <span class="header-panier-badge" id="header-panier-badge"></span>
+    </button>
     <button class="theme-toggle" onclick="app.toggleTheme()" title="Changer de thème">
       <span id="theme-icon">🌙</span>
-    </button>
-    <button class="panier-toggle" onclick="app.togglePanier()" title="Voir le panier">
-      🛒
-      <span class="panier-badge" id="header-panier-badge"></span>
     </button>
   </div>
 </div>
@@ -2873,6 +2842,42 @@ body {
   </div>
 </div>
 
+<!-- PAGE PANIER -->
+<div class="page" id="page-panier">
+  <div class="container">
+    <div class="panier-page-header">
+      <h2>🛒 Mon Panier</h2>
+      <span class="panier-page-count" id="panier-page-count">0 produit</span>
+    </div>
+    
+    <!-- Panier vide -->
+    <div class="panier-page-vide" id="panier-page-vide">
+      <div class="panier-page-vide-icon">🛒</div>
+      <p>Votre panier est vide</p>
+      <small>Scannez des produits depuis l'onglet Mouvements</small>
+      <button class="btn-primary" onclick="app.switchPage('movement', document.querySelector('.nav-btn'))">
+        📦 Aller scanner
+      </button>
+    </div>
+    
+    <!-- Liste produits panier -->
+    <div class="panier-page-liste" id="panier-page-liste" style="display: none;"></div>
+    
+    <!-- Actions panier -->
+    <div class="panier-page-actions" id="panier-page-actions" style="display: none;">
+      <button class="btn-danger" onclick="app.viderPanier()">
+        🗑️ Vider tout
+      </button>
+      <button class="btn-secondary" onclick="app.ouvrirApercu()">
+        👁️ Aperçu
+      </button>
+      <button class="btn-primary" onclick="app.synchroniserPanier()">
+        ✓ Synchroniser
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- PAGE HISTORIQUE -->
 <div class="page" id="page-historique">
   <div class="container">
@@ -2905,6 +2910,11 @@ body {
     <span>🖼️</span>
     Catalogue
   </button>
+  <button class="nav-btn" onclick="app.switchPage('panier', this)">
+    <span>🛒</span>
+    Panier
+    <span class="nav-badge" id="nav-panier-badge"></span>
+  </button>
   <button class="nav-btn" onclick="app.switchPage('historique', this)">
     <span>📋</span>
     Historique
@@ -2913,43 +2923,6 @@ body {
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
-
-<!-- MODAL PANIER -->
-<div class="panier-modal" id="panier-modal">
-  <div class="panier-modal-overlay" onclick="app.togglePanier()"></div>
-  
-  <div class="panier-modal-content">
-    <!-- Header -->
-    <div class="panier-modal-header">
-      <h2>🛒 Panier</h2>
-      <span class="panier-count" id="panier-count">Panier vide</span>
-      <button class="panier-close" onclick="app.togglePanier()">✕</button>
-    </div>
-    
-    <!-- Corps - Liste des items -->
-    <div class="panier-modal-body" id="panier-modal-body">
-      <!-- Panier vide -->
-      <div class="panier-vide" id="panier-vide">
-        <div class="panier-vide-icon">🛒</div>
-        <p>Votre panier est vide</p>
-        <small>Scannez ou ajoutez des produits</small>
-      </div>
-      
-      <!-- Items du panier -->
-      <div class="panier-items" id="panier-items" style="display: none;"></div>
-    </div>
-    
-    <!-- Footer - Actions -->
-    <div class="panier-modal-footer">
-      <button class="btn-secondary" onclick="app.viderPanier()">
-        🗑️ Vider
-      </button>
-      <button class="btn-primary" onclick="app.validerPanier()">
-        ✓ Valider
-      </button>
-    </div>
-  </div>
-</div>
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.18.6/umd/index.min.js"></script>
@@ -2963,11 +2936,21 @@ const CONFIG = {
 
 // Données
 const DATA = {
-  PRODUITS: [{"ref":"MAT-001","nom":"Portes d’accès ovale 8×5","cat":"Portes d'accès","unite":"Caisse","uniteUtil":"Unité","facteur":20},{"ref":"MAT-002","nom":"Portes d’accès ovale 12×6","cat":"Portes d'accès","unite":"Caisse","uniteUtil":"Unité","facteur":10},{"ref":"MAT-003","nom":"Portes d’accès ovale 18×10","cat":"Portes d'accès","unite":"Caisse","uniteUtil":"Unité","facteur":10},{"ref":"MAT-004","nom":"Portes d’accès ovale 21×14","cat":"Portes d'accès","unite":"Caisse","uniteUtil":"Unité","facteur":5},{"ref":"MAT-005","nom":"Portes d’accès ovale 25×17","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-006","nom":"Porte D'accès Ronde 8x4 (5-6)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-007","nom":"Porte D'accès Ronde 8x4 (7-9)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-008","nom":"Porte D'accès Ronde 8x4 (10-11)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-009","nom":"Porte D'accès Ronde 12x8 (10-11)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-010","nom":"Porte D'accès Ronde 12x8 (12-14)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-011","nom":"Porte D'accès Ronde 12x8 (15-16)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-012","nom":"Porte D'accès Ronde 12x8 (17-18)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-013","nom":"Porte d'acces ronde 16x12 (17-18)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-014","nom":"Porte d'acces ronde 16x12 (19-20)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-015","nom":"Porte d'acces ronde 16x12 (21-22)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-016","nom":"Porte d'acces ronde 16x12 (23-24)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-017","nom":"Porte d'acces ronde 16x12 (25-28)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-018","nom":"Porte d'acces ronde 16x12 (29-32)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-019","nom":"Porte d'acces ronde 16x12 (33-36)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-020","nom":"Porte d'acces ronde 21x22","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-021","nom":"Portes d’accès Carré  12 x 12 (architeturales)    CTR","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-022","nom":"Portes d’accès Carré  16 X 16 (architeturales)    CTR","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-023","nom":"Portes d’accès Carré  24 X 24 (architeturales)    CTR","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-024","nom":"Portes Architecturales coupe feu 16 X 16","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-025","nom":"Portes Architecturales coupe feu 24 X 24","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-026","nom":"Feuille de Tôle  Galv. 48X96 26G","cat":"Feuille de Tôle","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-027","nom":"Feuille de Tôle 48X96 28G","cat":"Feuille de Tôle","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-028","nom":"RLX Toile Orange 12'X100'","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-029","nom":"RLX Polyéthylène 240' x 2000pc      Léger","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-030","nom":"RLX Polyéthylène 120\" x 1500pc     Moyen","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-031","nom":"RLX Polyéthylène 120\" x 1500pc      Fort","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-032","nom":"RLX Polyéthylène 120\"x150'- 1500pc Léger","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-033","nom":"Film Protection Conduits Auto Collant 24 pouce ( Plastic bleu)","cat":"Plastique","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-034","nom":"Adhésif aérosol 357   482 g./14Oz","cat":"Plastique","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-035","nom":"Pellicule d'emballage XH32512 (1,5PIED)","cat":"Plastique","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-036","nom":"Fermeture à Glissière Collante + Couteau Zipper/Zip Wall HD Adhésive(12 unité)","cat":"Plastique","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-037","nom":"Tape vert  double face 2 Pouce (rouleau)","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-038","nom":"Tape bleu ou vert  (peintre) 2 Pouce (caisse de 24 rlx)","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-039","nom":"Tape Gris 2’’ Nashua (caisse de 24 rlx)","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":24},{"ref":"MAT-040","nom":"Tape  Rouge  (caisse de 20 rlx)","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":20},{"ref":"MAT-041","nom":"Tape Blanc/transparent double face","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-042","nom":"Protection Tapis/Plancher Un Coté Collant 24'' x 36'","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":50},{"ref":"MAT-043","nom":"Tape Aluminium 1.6 mil 72mmx55m (16/ca","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":16},{"ref":"MAT-044","nom":"Tape Aluminium 1.6 mil 48mmx45,72m (24rlx/caisse","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":24},{"ref":"MAT-045","nom":"Tape Aluminium 3M Filamenté pour scellent","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-046","nom":"Butyl/Rouleau 1/8x3/8x25","cat":"Tape","unite":"Caisse","uniteUtil":"Rlx","facteur":10},{"ref":"MAT-047","nom":"Butyl pour portes d'access en rouleau (20 RLX)","cat":"Tape","unite":"Rlx","uniteUtil":"","facteur":1},{"ref":"MAT-048","nom":"Tube Plastique 12'' Dia. (Rlx19'' Plat) x 500' x 6 Mil","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-049","nom":"Sac 42X48 Noir extra fort 100","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-050","nom":"Sac 35X50 Noir extra fort 100","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-051","nom":"Sac 26X36 Noir extra fort  200","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-052","nom":"Sac 22X24 Noir 500","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-053","nom":"Sac 42x48 transparent extra fort","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-054","nom":"Sac 35x50 transparent extra fort","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-055","nom":"Sac papier cire 500","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-056","nom":"Sac 33x48   Trasparent 3 MIL 100 SAC","cat":"Sac","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-057","nom":"Sac 33x50 en rouleau 3 mil (100 sacs) Jaune (Amiante)","cat":"Sac","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-058","nom":"Papier Toilette (jumbo) GO GREEN    G9942100","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-059","nom":"Papier Toilette  SCOTT   4804002  (petits rouleaux)","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-060","nom":"Papier toilette 2 épaisseurs 1000'  G9360004-12/CAISSE (Jumbo)","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-061","nom":"Papier à Main GO GREEN     G9942302","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-062","nom":"Papier à main 8\" X 8 ROULEAUX G9360015","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-063","nom":"Masque Papier 3M - N95 (20 unité par boite) (10 boite / caisse)","cat":"Masque","unite":"Caisse","uniteUtil":"Unité","facteur":20},{"ref":"MAT-064","nom":"Demi Masque Respiratoire Silicone Series 7700 Honywell","cat":"Masque","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-065","nom":"Cartouche Gaz organique et acide Filtre P100 (2 par paquet) Mageta/Jaune","cat":"Masque","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-066","nom":"Cartouche Vapeur/Organique Filtre P100 (2 par paquet) Mageta/Noir","cat":"Masque","unite":"Paquet","uniteUtil":"","facteur":1},{"ref":"MAT-067","nom":"Cartouche pour Demi Masque Hepa P100 (2 par paquet) Mageta","cat":"Masque","unite":"Paquet","uniteUtil":"","facteur":1},{"ref":"MAT-068","nom":"Serviettes rafraichissantes alcool pour masque (100 par boite)","cat":"Masque","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-069","nom":"Serviettes de chlorure de benzalkonium pour masque (100)","cat":"Masque","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-070","nom":"Masque full face avec aide respiratoire , batterie et chargeur","cat":"Masque","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-071","nom":"Gant Nitril disposable NOIR XL 8 mil (50 unite par boite) (10 boite / caisse) Jaune","cat":"Gants","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-072","nom":"Gant PRO XL  INDUSTRIELS EN CAOUTCHOUC 15 mil (Prot. produits corrosifs)","cat":"Gants","unite":"Paire","uniteUtil":"","facteur":1},{"ref":"MAT-073","nom":"Gant Nitrile Bleu 4 mil X 10 boites","cat":"Gants","unite":"caisse","uniteUtil":"boite","facteur":10},{"ref":"MAT-074","nom":"Gant coton polyester antidérapant","cat":"Gants","unite":"Paire","uniteUtil":"","facteur":1},{"ref":"MAT-075","nom":"Gant Nitril disposable NOIR XL 5 mil (100 unite par boite) (10 boite / caisse) Rouge","cat":"Gants","unite":"Boîte","uniteUtil":"","facteur":10},{"ref":"MAT-076","nom":"Bouchon d`oreille en mousse","cat":"EPI","unite":"Paquet","uniteUtil":"","facteur":1},{"ref":"MAT-077","nom":"Casque de protection auditive","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-078","nom":"Protecteur faciel (visiere claire)","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-079","nom":"Trousse de premiers soins","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-080","nom":"Rinçage oculaire","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-081","nom":"Support pour visière North","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-082","nom":"Solution Isotonique sterile 1L","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-083","nom":"Lunette sécuritaires claires Z-TECK","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-084","nom":"Tyvek/X-Guard Vêtement Polypro Bleu XL (20 unité)","cat":"Tyvec","unite":"Caisse","uniteUtil":"Unité","facteur":20},{"ref":"MAT-085","nom":"Tyvek/X-Guard Vêtement Polypro Blanc XL (25 unité)","cat":"Tyvec","unite":"Caisse","uniteUtil":"Unité","facteur":25},{"ref":"MAT-086","nom":"Tyvek/X-Guard Vêtement Polypro Blanc 2XL (25 unité)","cat":"Tyvec","unite":"Caisse","uniteUtil":"Unité","facteur":25},{"ref":"MAT-087","nom":"Tyvek/X-Guard Vêtement Polypro Blanc 3XL (25 unité)","cat":"Tyvec","unite":"Caisse","uniteUtil":"Unité","facteur":25},{"ref":"MAT-088","nom":"Couvre Chaussure Non Conducteur XL (200 par Boîte)","cat":"Tyvec","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-089","nom":"Confort 1","cat":"Maison","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-090","nom":"Confort 2","cat":"Maison","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-091","nom":"Confort 3","cat":"Maison","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-092","nom":"Confort 4","cat":"Maison","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-093","nom":"Confort 5","cat":"Maison","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-094","nom":"Confort 6","cat":"Bureau","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-095","nom":"Confort 7","cat":"Bureau","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-096","nom":"Confort 8","cat":"Bureau","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-097","nom":"Confort 9","cat":"Bureau","unite":"Caisse","uniteUtil":"","facteur":1}],
+  PRODUITS: [{"ref":"MAT-001","nom":"Portes d'accès ovale 8×5","cat":"Portes d'accès","unite":"Caisse","uniteUtil":"Unité","facteur":20},{"ref":"MAT-002","nom":"Portes d'accès ovale 12×6","cat":"Portes d'accès","unite":"Caisse","uniteUtil":"Unité","facteur":10},{"ref":"MAT-003","nom":"Portes d'accès ovale 18×10","cat":"Portes d'accès","unite":"Caisse","uniteUtil":"Unité","facteur":10},{"ref":"MAT-004","nom":"Portes d'accès ovale 21×14","cat":"Portes d'accès","unite":"Caisse","uniteUtil":"Unité","facteur":5},{"ref":"MAT-005","nom":"Portes d'accès ovale 25×17","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-006","nom":"Porte D'accès Ronde 8x4 (5-6)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-007","nom":"Porte D'accès Ronde 8x4 (7-9)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-008","nom":"Porte D'accès Ronde 8x4 (10-11)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-009","nom":"Porte D'accès Ronde 12x8 (10-11)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-010","nom":"Porte D'accès Ronde 12x8 (12-14)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-011","nom":"Porte D'accès Ronde 12x8 (15-16)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-012","nom":"Porte D'accès Ronde 12x8 (17-18)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-013","nom":"Porte d'acces ronde 16x12 (17-18)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-014","nom":"Porte d'acces ronde 16x12 (19-20)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-015","nom":"Porte d'acces ronde 16x12 (21-22)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-016","nom":"Porte d'acces ronde 16x12 (23-24)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-017","nom":"Porte d'acces ronde 16x12 (25-28)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-018","nom":"Porte d'acces ronde 16x12 (29-32)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-019","nom":"Porte d'acces ronde 16x12 (33-36)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-020","nom":"Porte d'acces ronde 21x22","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-021","nom":"Portes d'accès Carré 12 x 12 (architeturales) CTR","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-022","nom":"Portes d'accès Carré 16 X 16 (architeturales) CTR","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-023","nom":"Portes d'accès Carré 24 X 24 (architeturales) CTR","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-024","nom":"Portes Architecturales coupe feu 16 X 16","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-025","nom":"Portes Architecturales coupe feu 24 X 24","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-026","nom":"Feuille de Tôle Galv. 48X96 26G","cat":"Feuille de Tôle","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-027","nom":"Feuille de Tôle 48X96 28G","cat":"Feuille de Tôle","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-028","nom":"RLX Toile Orange 12'X100'","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-029","nom":"RLX Polyéthylène 240' x 2000pc Léger","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-030","nom":"RLX Polyéthylène 120\" x 1500pc Moyen","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-031","nom":"RLX Polyéthylène 120\" x 1500pc Fort","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-032","nom":"RLX Polyéthylène 120\"x150'- 1500pc Léger","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-033","nom":"Film Protection Conduits Auto Collant 24 pouce ( Plastic bleu)","cat":"Plastique","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-034","nom":"Adhésif aérosol 357 482 g./14Oz","cat":"Plastique","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-035","nom":"Pellicule d'emballage XH32512 (1,5PIED)","cat":"Plastique","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-036","nom":"Fermeture à Glissière Collante + Couteau Zipper/Zip Wall HD Adhésive(12 unité)","cat":"Plastique","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-037","nom":"Tape vert double face 2 Pouce (rouleau)","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-038","nom":"Tape bleu ou vert (peintre) 2 Pouce (caisse de 24 rlx)","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-039","nom":"Tape Gris 2'' Nashua (caisse de 24 rlx)","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":24},{"ref":"MAT-040","nom":"Tape Rouge (caisse de 20 rlx)","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":20},{"ref":"MAT-041","nom":"Tape Blanc/transparent double face","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-042","nom":"Protection Tapis/Plancher Un Coté Collant 24'' x 36'","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":50},{"ref":"MAT-043","nom":"Tape Aluminium 1.6 mil 72mmx55m (16/ca","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":16},{"ref":"MAT-044","nom":"Tape Aluminium 1.6 mil 48mmx45,72m (24rlx/caisse","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":24},{"ref":"MAT-045","nom":"Tape Aluminium 3M Filamenté pour scellent","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-046","nom":"Butyl/Rouleau 1/8x3/8x25","cat":"Tape","unite":"Caisse","uniteUtil":"Rlx","facteur":10},{"ref":"MAT-047","nom":"Butyl pour portes d'access en rouleau (20 RLX)","cat":"Tape","unite":"Rlx","uniteUtil":"","facteur":1},{"ref":"MAT-048","nom":"Tube Plastique 12'' Dia. (Rlx19'' Plat) x 500' x 6 Mil","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-049","nom":"Sac 42X48 Noir extra fort 100","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-050","nom":"Sac 35X50 Noir extra fort 100","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-051","nom":"Sac 26X36 Noir extra fort 200","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-052","nom":"Sac 22X24 Noir 500","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-053","nom":"Sac 42x48 transparent extra fort","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-054","nom":"Sac 35x50 transparent extra fort","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-055","nom":"Sac papier cire 500","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-056","nom":"Sac 33x48 Trasparent 3 MIL 100 SAC","cat":"Sac","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-057","nom":"Sac 33x50 en rouleau 3 mil (100 sacs) Jaune (Amiante)","cat":"Sac","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-058","nom":"Papier Toilette (jumbo) GO GREEN G9942100","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-059","nom":"Papier Toilette SCOTT 4804002 (petits rouleaux)","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-060","nom":"Papier toilette 2 épaisseurs 1000' G9360004-12/CAISSE (Jumbo)","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-061","nom":"Papier à Main GO GREEN G9942302","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-062","nom":"Papier à main 8\" X 8 ROULEAUX G9360015","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-063","nom":"Masque Papier 3M - N95 (20 unité par boite) (10 boite / caisse)","cat":"Masque","unite":"Caisse","uniteUtil":"Unité","facteur":20},{"ref":"MAT-064","nom":"Demi Masque Respiratoire Silicone Series 7700 Honywell","cat":"Masque","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-065","nom":"Cartouche Gaz organique et acide Filtre P100 (2 par paquet) Mageta/Jaune","cat":"Masque","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-066","nom":"Cartouche Vapeur/Organique Filtre P100 (2 par paquet) Mageta/Noir","cat":"Masque","unite":"Paquet","uniteUtil":"","facteur":1},{"ref":"MAT-067","nom":"Cartouche pour Demi Masque Hepa P100 (2 par paquet) Mageta","cat":"Masque","unite":"Paquet","uniteUtil":"","facteur":1},{"ref":"MAT-068","nom":"Serviettes rafraichissantes alcool pour masque (100 par boite)","cat":"Masque","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-069","nom":"Serviettes de chlorure de benzalkonium pour masque (100)","cat":"Masque","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-070","nom":"Masque full face avec aide respiratoire , batterie et chargeur","cat":"Masque","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-071","nom":"Gant Nitril disposable NOIR XL 8 mil (50 unite par boite) (10 boite / caisse) Jaune","cat":"Gants","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-072","nom":"Gant PRO XL INDUSTRIELS EN CAOUTCHOUC 15 mil (Prot. produits corrosifs)","cat":"Gants","unite":"Paire","uniteUtil":"","facteur":1},{"ref":"MAT-073","nom":"Gant Nitrile Bleu 4 mil X 10 boites","cat":"Gants","unite":"caisse","uniteUtil":"boite","facteur":10},{"ref":"MAT-074","nom":"Gant coton polyester antidérapant","cat":"Gants","unite":"Paire","uniteUtil":"","facteur":1},{"ref":"MAT-075","nom":"Gant Nitril disposable NOIR XL 5 mil (100 unite par boite) (10 boite / caisse) Rouge","cat":"Gants","unite":"Boîte","uniteUtil":"","facteur":10},{"ref":"MAT-076","nom":"Bouchon d`oreille en mousse","cat":"EPI","unite":"Paquet","uniteUtil":"","facteur":1},{"ref":"MAT-077","nom":"Casque de protection auditive","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-078","nom":"Protecteur faciel (visiere claire)","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-079","nom":"Trousse de premiers soins","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-080","nom":"Rinçage oculaire","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-081","nom":"Support pour visière North","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-082","nom":"Solution Isotonique sterile 1L","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-083","nom":"Lunette sécuritaires claires Z-TECK","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-084","nom":"Tyvek/X-Guard Vêtement Polypro Bleu XL (20 unité)","cat":"Tyvec","unite":"Caisse","uniteUtil":"Unité","facteur":20},{"ref":"MAT-085","nom":"Tyvek/X-Guard Vêtement Polypro Blanc XL (25 unité)","cat":"Tyvec","unite":"Caisse","uniteUtil":"Unité","facteur":25},{"ref":"MAT-086","nom":"Tyvek/X-Guard Vêtement Polypro Blanc 2XL (25 unité)","cat":"Tyvec","unite":"Caisse","uniteUtil":"Unité","facteur":25},{"ref":"MAT-087","nom":"Tyvek/X-Guard Vêtement Polypro Blanc 3XL (25 unité)","cat":"Tyvec","unite":"Caisse","uniteUtil":"Unité","facteur":25},{"ref":"MAT-088","nom":"Couvre Chaussure Non Conducteur XL (200 par Boîte)","cat":"Tyvec","unite":"Caisse","uniteUtil":"","facteur":1}],
   
-  PROJETS: [{"code":"SDC-754","nom":"Nettoyage OMHM - Hab. Madelaine","employe":"Gonzalo H."},{"code":"SDC-740","nom":"Nettoyage OMHM - Hab. Beaubien","employe":"Cézar T."},{"code":"SDC-733","nom":"Nettoyage","employe":""},{"code":"SDC-734","nom":"netoya","employe":"Gonzalo H."},{"code":"SDC-502","nom":"CVCA 1","employe":"Mario"},{"code":"SDC-503","nom":"CVCA 2","employe":"José H."},{"code":"SDC-504","nom":"CVCA 3","employe":"Cézar T."},{"code":"SDC-510","nom":"CVCA 9","employe":"Sohail S."},{"code":"SDC-511","nom":"CVCA 10","employe":"Cézar T."},{"code":"SDC-512","nom":"CVCA 11","employe":"Alain B."},{"code":"SDC-513","nom":"CVCA 12","employe":"Gonzalo H."},{"code":"SDC-514","nom":"CVCA 13","employe":"Cézar T."},{"code":"SDC-516","nom":"CVCA 15","employe":"José H."}],
+  PROJETS: [{"code":"SDC-754","nom":"Nettoyage OMHM - Hab. Madelaine","employe":"Gonzalo H."},{"code":"SDC-740","nom":"Nettoyage OMHM - Hab. Beaubien","employe":"José H."}],
   
-  OPERATEURS: [{"nom":"Gonzalo H.","pin":"6594","role":"Chef d'équipe"},{"nom":"José H.","pin":"5678","role":"Chef d'équipe"},{"nom":"Cézar T.","pin":"9012","role":"Chef d'équipe"},{"nom":"Alain B.","pin":"3456","role":"Chef d'équipe"},{"nom":"Mario H.","pin":"7890","role":"Chef d'équipe"},{"nom":"Edgar T.","pin":"1234","role":"Chef d'équipe"},{"nom":"Marisol C.","pin":"1981","role":"Administrateur"},{"nom":"Walther C.","pin":"8610","role":"Administrateur"},{"nom":"Sohail S.","pin":"1955","role":"Administrateur"},{"nom":"Christian T.","pin":"2026","role":"Administrateur"},{"nom":"Nancy C.","pin":"2025","role":"Administrateur"}],
+  OPERATEURS: [
+    {"nom":"Gonzalo H.","pin":"6594","role":"Chef d'équipe"},
+    {"nom":"José H.","pin":"5678","role":"Chef d'équipe"},
+    {"nom":"Cézar T.","pin":"9012","role":"Chef d'équipe"},
+    {"nom":"Alain B.","pin":"3456","role":"Chef d'équipe"},
+    {"nom":"Mario","pin":"7890","role":"Chef d'équipe"},
+    {"nom":"Walther C.","pin":"8610","role":"Chef d'équipe"},
+    {"nom":"Sohail S.","pin":"1955","role":"Administrateur"},
+    {"nom":"Christian T.","pin":"2026","role":"Administrateur"},
+    {"nom":"Nancy C.","pin":"2025","role":"Administrateur"}
+  ],
   
   CAT_COLORS: {
     "Portes d'accès": "#667eea",
@@ -3002,7 +2985,6 @@ const app = {
     currentOperator: null,
     movementType: 'Sortie',
     cart: [],
-    panier: [],
     queue: JSON.parse(localStorage.getItem('mvQueue') || '[]'),
     currentProd: null,
     currentUniteMode: 'stock',
@@ -3207,9 +3189,8 @@ const app = {
     
     this.state.currentOperator = null;
     this.state.cart = [];
-    this.state.panier = [];
     this.state.pinBuffer = '';
-    this.updatePanierBadge();
+    this.updatePanierBadges();
     
     document.getElementById('pin-screen').classList.remove('hidden');
     document.getElementById('header').style.display = 'none';
@@ -3614,18 +3595,6 @@ const app = {
       obs: obs
     });
     
-    // Synchroniser avec le panier modal
-    this.state.panier.push({
-      id: Date.now(),
-      code: prod.ref,
-      nom: prod.nom,
-      unite: uniteAffichee,
-      qty: qty
-    });
-    
-    // Mettre à jour le badge panier
-    this.updatePanierBadge();
-    
     // Fermer le modal
     this.closeConfirmProduct();
     
@@ -3639,6 +3608,7 @@ const app = {
     this.state.currentProd = null;
     
     this.renderCart();
+    this.updatePanierBadges();
     this.showToast('✓ Ajouté au panier');
     this.vibrate([50, 100, 50]);
     
@@ -3650,16 +3620,15 @@ const app = {
 
   removeFromCart(id) {
     this.state.cart = this.state.cart.filter(item => item.id !== id);
-    this.state.panier = this.state.panier.filter(item => item.id !== id);
     this.renderCart();
-    this.updatePanierBadge();
+    this.afficherPagePanier();
+    this.updatePanierBadges();
     this.vibrate(50);
     this.showToast('Article supprimé');
   },
 
   updateCartQty(id, delta) {
     const item = this.state.cart.find(i => i.id === id);
-    const panierItem = this.state.panier.find(p => p.id === id);
     if (!item) return;
     
     const newQty = Math.max(0.5, item.qte + delta);
@@ -3671,10 +3640,8 @@ const app = {
     }
     
     item.qte = newQty;
-    if (panierItem) {
-      panierItem.qty = newQty;
-    }
     this.renderCart();
+    this.afficherPagePanier();
     this.vibrate(30);
   },
 
@@ -3878,9 +3845,9 @@ const app = {
     localStorage.setItem('mvQueue', JSON.stringify(this.state.queue));
     
     this.state.cart = [];
-    this.state.panier = [];
     this.renderCart();
-    this.updatePanierBadge();
+    this.afficherPagePanier();
+    this.updatePanierBadges();
     this.updateQueueCount();
     
     this.showToast(`✓ ${nbMouvements} mouvement(s) enregistré(s)`);
@@ -3943,7 +3910,7 @@ const app = {
 
   // Pages
   switchPage(page, btn) {
-    ['movement', 'catalogue', 'historique'].forEach(p => {
+    ['movement', 'catalogue', 'panier', 'historique'].forEach(p => {
       document.getElementById('page-' + p).classList.toggle('active', page === p);
     });
     
@@ -3954,6 +3921,8 @@ const app = {
     
     if (page === 'catalogue') {
       this.renderCatalogue();
+    } else if (page === 'panier') {
+      this.afficherPagePanier();
     } else if (page === 'historique') {
       this.loadHistory();
     }
@@ -4260,113 +4229,126 @@ const app = {
     }
   },
 
-  // FONCTIONS PANIER
-  togglePanier() {
-    const modal = document.getElementById('panier-modal');
-    modal.classList.toggle('active');
-    if (modal.classList.contains('active')) {
-      this.afficherPanier();
+  // ========== FONCTIONS PANIER ==========
+  
+  goToPanier() {
+    // Aller à l'onglet panier depuis le badge header
+    const panierBtn = Array.from(document.querySelectorAll('.nav-btn'))
+      .find(btn => btn.textContent.includes('Panier'));
+    if (panierBtn) {
+      this.switchPage('panier', panierBtn);
     }
     this.vibrate(30);
   },
 
-  afficherPanier() {
-    const panierItems = document.getElementById('panier-items');
-    const panierVide = document.getElementById('panier-vide');
-    const panierCount = document.getElementById('panier-count');
+  afficherPagePanier() {
+    const panierListe = document.getElementById('panier-page-liste');
+    const panierVide = document.getElementById('panier-page-vide');
+    const panierActions = document.getElementById('panier-page-actions');
+    const panierCount = document.getElementById('panier-page-count');
     
-    const count = this.state.panier.length;
-    panierCount.textContent = count === 0 ? 'Panier vide' : 
-                              count === 1 ? '1 produit' : 
+    const count = this.state.cart.length;
+    
+    // Mettre à jour le compteur
+    panierCount.textContent = count === 0 ? 'Panier vide' :
+                              count === 1 ? '1 produit' :
                               `${count} produits`;
     
+    // Si panier vide
     if (count === 0) {
       panierVide.style.display = 'block';
-      panierItems.style.display = 'none';
+      panierListe.style.display = 'none';
+      panierActions.style.display = 'none';
       return;
     }
     
+    // Afficher la liste
     panierVide.style.display = 'none';
-    panierItems.style.display = 'flex';
+    panierListe.style.display = 'flex';
+    panierActions.style.display = 'grid';
     
-    panierItems.innerHTML = this.state.panier.map(item => `
-      <div class="panier-item">
-        <img src="photos/${item.code}.jpg" 
-             class="panier-item-photo"
-             onerror="this.style.background='var(--bg-card)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.innerHTML='📦';">
-        
-        <div class="panier-item-info">
-          <div class="panier-item-code">${item.code}</div>
-          <div class="panier-item-nom">${item.nom}</div>
+    // Générer la liste des produits
+    panierListe.innerHTML = this.state.cart.map(item => {
+      const prod = DATA.PRODUITS.find(p => p.ref === item.ref);
+      const color = DATA.CAT_COLORS[item.cat] || '#667eea';
+      const icon = DATA.CAT_ICONS[item.cat] || '📦';
+      
+      return `
+        <div class="panier-page-item">
+          <img src="photos/${item.ref}.jpg" 
+               class="panier-page-item-photo"
+               onerror="this.outerHTML='<div class=panier-page-item-photo style=background:${color}20;display:flex;align-items:center;justify-content:center;font-size:32px>${icon}</div>';">
           
-          <div class="panier-item-controls">
-            <button class="panier-qty-btn" onclick="app.updatePanierQty('${item.id}', -1)">−</button>
-            <span class="panier-qty-value">${item.qty}</span>
-            <button class="panier-qty-btn" onclick="app.updatePanierQty('${item.id}', 1)">+</button>
-            <span class="panier-item-unite">${item.unite}</span>
+          <div class="panier-page-item-info">
+            <div class="panier-page-item-code">${item.ref}</div>
+            <div class="panier-page-item-nom">${item.nom}</div>
+            
+            <div class="panier-page-item-controls">
+              <button class="panier-page-qty-btn" onclick="app.updateCartQty(${item.id}, -1)">−</button>
+              <span class="panier-page-qty-value">${item.qte}</span>
+              <button class="panier-page-qty-btn" onclick="app.updateCartQty(${item.id}, 1)">+</button>
+              <span class="panier-page-item-unite">${item.unite}</span>
+            </div>
           </div>
+          
+          <button class="panier-page-item-delete" onclick="app.removeFromCart(${item.id})">
+            🗑️
+          </button>
         </div>
-        
-        <button class="panier-item-delete" onclick="app.supprimerDuPanier('${item.id}')">
-          🗑️
-        </button>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   },
 
-  updatePanierQty(id, delta) {
-    const item = this.state.panier.find(p => p.id === id);
-    if (!item) return;
+  updatePanierBadges() {
+    const count = this.state.cart.length;
     
-    item.qty += delta;
+    // Badge header
+    const headerBadge = document.getElementById('header-panier-badge');
+    if (headerBadge) {
+      headerBadge.textContent = count > 0 ? count : '';
+    }
     
-    if (item.qty <= 0) {
-      this.supprimerDuPanier(id);
-    } else {
-      this.afficherPanier();
-      this.updatePanierBadge();
-      this.vibrate(20);
+    // Badge navigation
+    const navBadge = document.getElementById('nav-panier-badge');
+    if (navBadge) {
+      navBadge.textContent = count > 0 ? count : '';
     }
   },
 
-  supprimerDuPanier(id) {
-    this.state.panier = this.state.panier.filter(p => p.id !== id);
-    this.afficherPanier();
-    this.updatePanierBadge();
-    this.vibrate(50);
-    this.showToast('Produit retiré du panier');
-  },
-
   viderPanier() {
-    if (this.state.panier.length === 0) {
+    if (this.state.cart.length === 0) {
       this.showToast('Le panier est déjà vide');
       return;
     }
     
-    if (confirm('Vider tout le panier ?')) {
-      this.state.panier = [];
-      this.afficherPanier();
-      this.updatePanierBadge();
+    if (confirm('Vider tout le panier ? Cette action est irréversible.')) {
+      this.state.cart = [];
+      this.renderCart();
+      this.afficherPagePanier();
+      this.updatePanierBadges();
       this.vibrate(50);
-      this.showToast('Panier vidé');
+      this.showToast('🗑️ Panier vidé');
     }
   },
 
-  updatePanierBadge() {
-    const badge = document.getElementById('header-panier-badge');
-    const count = this.state.panier.length;
-    
-    badge.textContent = count > 0 ? count : '';
-  },
-
-  validerPanier() {
-    if (this.state.panier.length === 0) {
+  ouvrirApercu() {
+    if (this.state.cart.length === 0) {
       this.showToast('Le panier est vide');
       return;
     }
     
-    this.togglePanier();
-    this.enregistrerMouvement();
+    // Utiliser la fonction existante openPreview
+    this.openPreview();
+  },
+
+  synchroniserPanier() {
+    if (this.state.cart.length === 0) {
+      this.showToast('Le panier est vide');
+      return;
+    }
+    
+    // Ouvrir l'aperçu avant de synchroniser
+    this.openPreview();
   }
 };
 
