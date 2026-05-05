@@ -3865,7 +3865,11 @@ const app = {
   // Queue
   updateQueueCount() {
     const unsync = this.state.queue.filter(x => !x.synced).length;
-    document.getElementById('queue-count').textContent = unsync;
+    
+    const queueCount = document.getElementById('queue-count');
+    if (queueCount) {
+      queueCount.textContent = unsync;
+    }
     
     // Mettre à jour aussi dans l'onglet Panier
     const panierQueueCount = document.getElementById('panier-queue-count');
@@ -3886,12 +3890,18 @@ const app = {
     const syncText = document.getElementById('sync-text');
     const panierBtn = document.getElementById('panier-btn-sync');
     const panierSyncText = document.getElementById('panier-sync-text');
+    
+    if (!btn || !syncText) {
+      // Les éléments n'existent pas encore (page pas chargée)
+      return;
+    }
+    
     const originalText = syncText.textContent;
     
     btn.disabled = true;
     syncText.innerHTML = '<span class="spinner"></span>';
     
-    if (panierBtn) {
+    if (panierBtn && panierSyncText) {
       panierBtn.disabled = true;
       panierSyncText.innerHTML = '<span class="spinner"></span>';
     }
@@ -3923,7 +3933,7 @@ const app = {
     btn.disabled = false;
     syncText.textContent = originalText;
     
-    if (panierBtn) {
+    if (panierBtn && panierSyncText) {
       panierBtn.disabled = false;
       panierSyncText.textContent = originalText;
     }
