@@ -1,0 +1,3845 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Scan Entrepôt v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #141824;
+  --bg-card: #1a1f2e;
+  --bg-input: #222838;
+  --accent: #00d4ff;
+  --accent-glow: rgba(0, 212, 255, 0.3);
+  --success: #00ff88;
+  --warning: #ffb800;
+  --danger: #ff3366;
+  --text-primary: #ffffff;
+  --text-secondary: #8b92a8;
+  --text-muted: #5a6278;
+  --border: rgba(255,255,255,0.08);
+  --shadow: rgba(0,0,0,0.4);
+  --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  --gradient-5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  --font-main: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-light {
+  --bg-primary: #f8f9fb;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-input: #f3f4f6;
+  --accent: #0066ff;
+  --accent-glow: rgba(0, 102, 255, 0.15);
+  --success: #00c853;
+  --warning: #ff9500;
+  --danger: #ff3b30;
+  --text-primary: #1a1a1a;
+  --text-secondary: #606060;
+  --text-muted: #999999;
+  --border: rgba(0,0,0,0.08);
+  --shadow: rgba(0,0,0,0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* HEADER */
+.header {
+  background: var(--bg-secondary);
+  backdrop-filter: blur(20px);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.header-logo {
+  height: 40px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+}
+
+.header-text {
+  font-size: 16px;
+}
+
+@media (max-width: 380px) {
+  .header-text {
+    display: none; /* Cacher "Scan Entrepôt" sur petit écran */
+  }
+  
+  .header-logo {
+    max-width: 160px;
+  }
+}
+
+.header-icon {
+  font-size: 28px;
+  filter: drop-shadow(0 0 10px var(--accent-glow));
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.badge-online {
+  background: var(--success);
+  color: var(--bg-primary);
+  box-shadow: 0 0 20px rgba(0,255,136,0.4);
+}
+
+.badge-offline {
+  background: var(--danger);
+  color: white;
+  animation: none;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.theme-toggle {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* SESSION BAR */
+.session-bar {
+  background: linear-gradient(90deg, var(--accent) 0%, rgba(0,212,255,0.1) 100%);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+.session-name {
+  font-weight: 700;
+  color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.session-logout {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: var(--bg-primary);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.session-logout:active {
+  transform: scale(0.95);
+}
+
+/* CONTAINER */
+.container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding-bottom: 100px;
+}
+
+/* CARDS */
+.card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px var(--shadow);
+  transition: var(--transition);
+}
+
+.card:hover {
+  border-color: rgba(255,255,255,0.12);
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* TYPE BUTTONS */
+.type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.type-btn {
+  padding: 14px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--bg-input);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-secondary);
+  position: relative;
+  overflow: hidden;
+}
+
+.type-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-1);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.type-btn span {
+  position: relative;
+  z-index: 1;
+}
+
+.type-btn.active {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.type-btn.active::before {
+  opacity: 0.1;
+}
+
+.type-btn:active {
+  transform: scale(0.97);
+}
+
+.type-btn[data-type="Transfert"] {
+  grid-column: span 2;
+}
+
+/* FIELDS */
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+
+.field select,
+.field input[type="text"],
+.field input[type="number"] {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-size: 15px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  transition: var(--transition);
+}
+
+.field select:focus,
+.field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+/* SCAN ZONE */
+.scan-zone {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  position: relative;
+}
+
+.scan-zone input {
+  flex: 1;
+}
+
+.btn-icon {
+  background: var(--bg-input);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 22px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+}
+
+.btn-icon:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--bg-primary);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.btn-icon:active {
+  transform: scale(0.95);
+}
+
+.btn-icon.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-primary);
+}
+
+/* SEARCH BAR */
+.search-bar {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 14px 16px 14px 48px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-size: 15px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+.search-bar::before {
+  content: '🔍';
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  opacity: 0.5;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+/* REF RESULT */
+.ref-result {
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 20px;
+  transition: var(--transition);
+}
+
+.ref-result.success {
+  background: rgba(0,255,136,0.1);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.ref-result.error {
+  background: rgba(255,51,102,0.1);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+/* QUANTITY ROW */
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.qty-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--bg-input);
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.qty-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+.qty-btn:active {
+  transform: scale(0.9);
+}
+
+.qty-input {
+  flex: 1;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 10px 8px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-input);
+  color: var(--accent);
+  max-width: 120px;
+  min-width: 80px;
+}
+
+/* UNITE TOGGLE */
+.unite-toggle {
+  display: none;
+  margin: 16px 0;
+  padding: 16px;
+  background: var(--bg-input);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.unite-toggle.visible {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.unite-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.unite-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.unite-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  background: var(--bg-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-secondary);
+}
+
+.unite-btn.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--bg-primary);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.unite-hint {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* BUTTONS */
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent) 0%, #0066ff 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 20px var(--accent-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent);
+  background: var(--bg-card);
+}
+
+.btn-secondary:active {
+  transform: scale(0.97);
+}
+
+/* PANIER */
+.panier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.panier-badge {
+  background: linear-gradient(135deg, var(--accent) 0%, #0066ff 100%);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 0 15px var(--accent-glow);
+  animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.panier-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.panier-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: var(--bg-input);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  transition: var(--transition);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.panier-item:hover {
+  background: var(--bg-card);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.panier-photo {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.panier-photo-placeholder {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.panier-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.panier-nom {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panier-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.panier-qty {
+  text-align: right;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.panier-qty-unit {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+  display: block;
+  margin-top: 2px;
+}
+
+.panier-qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.panier-qty-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.panier-qty-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.panier-qty-btn:active {
+  transform: scale(0.9);
+}
+
+.panier-qty-value {
+  min-width: 40px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+.btn-delete {
+  background: rgba(255,51,102,0.1);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: 10px;
+  padding: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-delete:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-delete:active {
+  transform: scale(0.9);
+}
+
+/* QUEUE BAR */
+.queue-bar {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--border);
+  margin-top: 16px;
+}
+
+.queue-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.queue-count strong {
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.btn-sync {
+  background: linear-gradient(135deg, var(--success) 0%, #00c853 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 15px rgba(0,255,136,0.3);
+}
+
+.btn-sync:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,255,136,0.4);
+}
+
+.btn-sync:active {
+  transform: translateY(0);
+}
+
+.btn-sync:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--bg-secondary);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 8px 0;
+  z-index: 100;
+  box-shadow: 0 -4px 20px var(--shadow);
+}
+
+.nav-btn {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nav-btn span {
+  font-size: 24px;
+  transition: var(--transition);
+}
+
+.nav-btn.active {
+  color: var(--accent);
+}
+
+.nav-btn.active span {
+  filter: drop-shadow(0 0 8px var(--accent-glow));
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  padding: 14px 24px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px var(--shadow);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 1000;
+  max-width: 90%;
+  text-align: center;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* SCANNER */
+.scanner-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.95);
+  z-index: 200;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.scanner-overlay.active {
+  display: flex;
+}
+
+#scanner-video {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 20px;
+  box-shadow: 0 0 50px var(--accent-glow);
+}
+
+.scan-frame {
+  position: absolute;
+  border: 3px solid var(--accent);
+  width: 280px;
+  height: 140px;
+  border-radius: 12px;
+  pointer-events: none;
+  box-shadow: 0 0 30px var(--accent-glow);
+  animation: scanPulse 2s ease-in-out infinite;
+}
+
+@keyframes scanPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.02);
+  }
+}
+
+.btn-close-scanner {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid white;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close-scanner:hover {
+  background: white;
+  color: var(--bg-primary);
+  transform: rotate(90deg);
+}
+
+.scan-hint {
+  color: white;
+  font-size: 14px;
+  margin-top: 30px;
+  text-align: center;
+  padding: 0 30px;
+  opacity: 0.8;
+}
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(10px);
+  z-index: 300;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal-overlay.active {
+  display: flex;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-sheet {
+  background: var(--bg-card);
+  border-radius: 24px 24px 0 0;
+  padding: 24px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  box-shadow: 0 -8px 40px var(--shadow);
+  animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* MODAL CONFIRMATION PRODUIT */
+.modal-confirm {
+  max-height: 85vh;
+}
+
+.modal-confirm-photo {
+  width: 100%;
+  max-width: 280px;
+  height: 200px;
+  margin: 0 auto 20px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-input);
+}
+
+.modal-confirm-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-confirm-photo-placeholder {
+  font-size: 80px;
+  opacity: 0.3;
+}
+
+.modal-confirm-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.modal-confirm-ref {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 24px;
+  font-family: var(--font-mono);
+}
+
+.modal-confirm-qty {
+  margin-bottom: 20px;
+}
+
+.modal-confirm-qty label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.modal-confirm-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.modal-confirm-qty-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--bg-input);
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modal-confirm-qty-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.modal-confirm-qty-btn:active {
+  transform: scale(0.9);
+}
+
+.modal-confirm-qty-input {
+  flex: 1;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 10px 8px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-input);
+  color: var(--accent);
+  max-width: 120px;
+  min-width: 80px;
+}
+
+.modal-confirm-qty-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+.modal-confirm-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  justify-content: center;
+}
+
+.modal-confirm-qty-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--bg-input);
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modal-confirm-unite {
+  background: linear-gradient(135deg, rgba(0,212,255,0.1) 0%, rgba(0,102,255,0.1) 100%);
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  border: 1px solid var(--accent);
+}
+
+.modal-confirm-obs {
+  margin-bottom: 20px;
+}
+
+.modal-confirm-obs label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.modal-confirm-obs input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 15px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  transition: var(--transition);
+  font-family: var(--font-main);
+}
+
+.modal-confirm-obs input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+.modal-handle {
+  width: 50px;
+  height: 5px;
+  background: var(--text-muted);
+  border-radius: 3px;
+  margin: 0 auto 20px;
+  opacity: 0.5;
+}
+
+.modal-title {
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--accent) 0%, #0066ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.modal-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modal-session {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.modal-session-item {
+  background: var(--bg-input);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.modal-session-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.modal-session-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modal-items {
+  margin-bottom: 20px;
+}
+
+.modal-total {
+  background: linear-gradient(135deg, rgba(0,212,255,0.1) 0%, rgba(0,102,255,0.1) 100%);
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border: 1px solid var(--accent);
+}
+
+.modal-total-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.modal-total-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+/* PIN SCREEN */
+.pin-screen {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1f2e 0%, #0a0e1a 100%);
+  z-index: 500;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pin-screen.hidden {
+  display: none;
+}
+
+/* Bouton thème sur écran PIN */
+.pin-theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-primary);
+  font-size: 24px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+.pin-theme-toggle:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--accent);
+  transform: rotate(15deg) scale(1.1);
+}
+
+.pin-theme-toggle:active {
+  transform: rotate(0deg) scale(0.95);
+}
+
+/* Thème clair pour PIN screen */
+.theme-light .pin-screen {
+  background: linear-gradient(135deg, #f0f2f5 0%, #e8eaf0 100%);
+}
+
+.theme-light .pin-theme-toggle {
+  border-color: rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.8);
+}
+
+.pin-logo {
+  font-size: 60px;
+  margin: 30px 0 20px;
+  filter: drop-shadow(0 0 30px var(--accent-glow));
+  animation: float 3s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.pin-logo-img {
+  max-width: 200px;
+  max-height: 55px;
+  margin: 15px 0 10px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 10px rgba(0,0,0,0.2));
+  flex-shrink: 0;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.pin-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, var(--accent) 0%, #0066ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  flex-shrink: 0;
+}
+
+.pin-subtitle {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 30px;
+  text-align: center;
+  max-width: 300px;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+
+.pin-open-btn {
+  background: linear-gradient(135deg, var(--accent) 0%, #0066ff 100%);
+  border: none;
+  border-radius: 16px;
+  padding: 20px 40px;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 24px var(--accent-glow);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.pin-open-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px var(--accent-glow);
+}
+
+.pin-open-btn:active {
+  transform: translateY(0);
+}
+
+.pin-open-icon {
+  font-size: 24px;
+}
+
+/* MODAL PIN */
+.pin-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 600;
+  align-items: center;
+  justify-content: center;
+}
+
+.pin-modal.active {
+  display: flex;
+}
+
+.pin-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(10px);
+}
+
+.pin-modal-content {
+  position: relative;
+  background: var(--bg-card);
+  border-radius: 24px;
+  padding: 32px 24px;
+  width: 90%;
+  max-width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  animation: slideUp 0.3s ease;
+  z-index: 601;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pin-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.pin-dots,
+.pin-display {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+  justify-content: center;
+}
+
+.pin-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.3);
+  background: transparent;
+  transition: var(--transition);
+}
+
+.pin-dot.filled {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Thème clair pour dots PIN */
+.theme-light .pin-dot {
+  border: 2px solid rgba(0,0,0,0.2);
+}
+
+.theme-light .pin-dot.filled {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.pin-error {
+  color: #ff6b6b;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 16px;
+  min-height: 20px;
+  font-weight: 600;
+}
+
+.pin-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 280px;
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+
+.pin-operators {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.pin-operator-btn {
+  background: rgba(255,255,255,0.05);
+  border: 2px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 16px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.pin-operator-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.pin-operator-btn.selected {
+  background: linear-gradient(135deg, var(--accent) 0%, #0066ff 100%);
+  border-color: var(--accent);
+  box-shadow: 0 0 30px var(--accent-glow);
+  color: white;
+}
+
+/* Thème clair pour boutons opérateurs */
+.theme-light .pin-operator-btn {
+  background: white;
+  border: 2px solid rgba(0,0,0,0.1);
+  color: var(--text-primary);
+}
+
+.theme-light .pin-operator-btn:hover {
+  background: #f5f5f5;
+  border-color: rgba(0,0,0,0.2);
+}
+
+.theme-light .pin-operator-btn.selected {
+  background: linear-gradient(135deg, var(--accent) 0%, #0066ff 100%);
+  border-color: var(--accent);
+  color: white;
+}
+
+.pin-selected-name {
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  min-height: 24px;
+  flex-shrink: 0;
+}
+
+.pin-dots,
+.pin-display {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.pin-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.3);
+  background: transparent;
+  transition: var(--transition);
+}
+
+.pin-dot.filled {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Thème clair pour dots PIN */
+.theme-light .pin-dot {
+  border: 2px solid rgba(0,0,0,0.2);
+}
+
+.theme-light .pin-dot.filled {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.pin-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 260px;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.pin-key {
+  background: rgba(255,255,255,0.05);
+  border: 2px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 18px;
+  color: var(--text-primary);
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pin-key:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--accent);
+}
+
+.pin-key:active {
+  transform: scale(0.95);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.pin-key-secondary {
+  background: rgba(255,255,255,0.03);
+  color: var(--text-muted);
+}
+
+.pin-key-secondary:hover {
+  background: rgba(255,100,100,0.1);
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+/* Thème clair pour touches PIN */
+.theme-light .pin-key {
+  background: white;
+  border: 2px solid rgba(0,0,0,0.1);
+  color: var(--text-primary);
+}
+
+.theme-light .pin-key:hover {
+  background: #f5f5f5;
+  border-color: var(--accent);
+}
+
+.theme-light .pin-key:active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.pin-error {
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* CATALOGUE */
+.catalogue-tabs {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0 0 16px;
+  margin-bottom: 20px;
+  scrollbar-width: none;
+}
+
+.catalogue-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.catalogue-tab {
+  white-space: nowrap;
+  padding: 10px 18px;
+  border-radius: 24px;
+  border: 2px solid var(--border);
+  background: var(--bg-input);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.catalogue-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.catalogue-tab:active {
+  transform: scale(0.95);
+}
+
+.catalogue-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.catalogue-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.catalogue-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px var(--shadow);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.catalogue-card:active {
+  transform: translateY(-2px);
+}
+
+.catalogue-photo {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.catalogue-photo-placeholder {
+  width: 100%;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+
+.catalogue-body {
+  padding: 12px;
+}
+
+.catalogue-ref {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-bottom: 4px;
+}
+
+.catalogue-nom {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* HISTORIQUE */
+.hist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.hist-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.hist-operator {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.hist-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.hist-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.hist-filter-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 2px solid var(--border);
+  background: var(--bg-input);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.hist-filter-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.hist-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+
+.hist-group {
+  margin-bottom: 24px;
+}
+
+.hist-date-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+}
+
+.hist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.hist-type-badge {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.hist-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.hist-ref {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.hist-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.hist-qty {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* PAGES */
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+/* LISTE PICKER */
+.liste-picker {
+  display: none;
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--bg-input);
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  animation: slideDown 0.3s ease;
+}
+
+.liste-picker.open {
+  display: block;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+.liste-picker .field {
+  margin-bottom: 12px;
+}
+
+.liste-picker .field:last-child {
+  margin-bottom: 0;
+}
+
+.liste-picker label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.liste-picker select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: var(--transition);
+  font-family: var(--font-main);
+}
+
+.liste-picker select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.liste-picker select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.liste-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.liste-picker-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.liste-picker-close {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: var(--text-muted);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.liste-picker-close:hover {
+  background: var(--danger);
+  color: white;
+}
+
+/* RESPONSIVE */
+@media (min-width: 768px) {
+  .catalogue-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .modal-session {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Optimisation pour petits écrans (iPhone SE, etc.) */
+@media (max-height: 700px) {
+  .pin-screen {
+    padding: 15px 20px;
+  }
+  
+  .pin-logo {
+    font-size: 50px;
+    margin: 20px 0 15px;
+  }
+  
+  .pin-title {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  
+  .pin-subtitle {
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+  
+  .pin-operators {
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+  
+  .pin-operator-btn {
+    padding: 12px;
+    font-size: 13px;
+  }
+  
+  .pin-selected-name {
+    font-size: 15px;
+    margin-bottom: 12px;
+    min-height: 20px;
+  }
+  
+  .pin-dots {
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+  
+  .pin-dot {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .pin-pad {
+    gap: 8px;
+    max-width: 240px;
+    margin-bottom: 12px;
+  }
+  
+  .pin-key {
+    padding: 14px;
+    font-size: 20px;
+    min-height: 54px;
+  }
+  
+  .pin-error {
+    font-size: 12px;
+  }
+}
+
+/* Optimisation quantité sur petits écrans */
+@media (max-width: 380px) {
+  .qty-row {
+    gap: 8px;
+  }
+  
+  .qty-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+  
+  .qty-input {
+    font-size: 20px;
+    padding: 8px 6px;
+    min-width: 70px;
+    max-width: 100px;
+  }
+  
+  .panier-qty-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+  
+  .panier-qty-value {
+    min-width: 35px;
+    font-size: 14px;
+  }
+  
+  .panier-nom {
+    font-size: 13px;
+  }
+  
+  .panier-meta {
+    font-size: 11px;
+  }
+}
+
+/* Très petits écrans */
+@media (max-height: 600px) {
+  .pin-logo {
+    font-size: 40px;
+    margin: 15px 0 10px;
+  }
+  
+  .pin-title {
+    font-size: 18px;
+  }
+  
+  .pin-operators {
+    margin-bottom: 12px;
+  }
+  
+  .pin-pad {
+    gap: 6px;
+    max-width: 220px;
+  }
+  
+  .pin-key {
+    padding: 12px;
+    font-size: 18px;
+    min-height: 48px;
+  }
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-input);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* LOADING SPINNER */
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+
+<!-- PIN SCREEN -->
+<div class="pin-screen" id="pin-screen">
+  <button class="pin-theme-toggle" onclick="app.toggleTheme()" title="Changer de thème">
+    <span id="pin-theme-icon">🌙</span>
+  </button>
+  
+  <img src="logo-dark.png" alt="SDC" class="pin-logo-img" 
+       onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+  <div class="pin-logo" style="display: none;">📦</div>
+  <div class="pin-title">SDC — Scan Entrepôt</div>
+  <div class="pin-subtitle">Touchez pour entrer votre code PIN</div>
+  
+  <button class="pin-open-btn" onclick="app.openPinModal()">
+    <span class="pin-open-icon">🔒</span>
+    <span>Entrer le code PIN</span>
+  </button>
+</div>
+
+<!-- MODAL PIN -->
+<div class="pin-modal" id="pin-modal">
+  <div class="pin-modal-overlay" onclick="app.closePinModal()"></div>
+  <div class="pin-modal-content">
+    <div class="pin-modal-title">Code PIN à 4 chiffres</div>
+    
+    <div class="pin-display">
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+    </div>
+    
+    <div class="pin-error" id="pin-error"></div>
+    
+    <div class="pin-pad">
+      <button class="pin-key" onclick="app.pinKey('1')">1</button>
+      <button class="pin-key" onclick="app.pinKey('2')">2</button>
+      <button class="pin-key" onclick="app.pinKey('3')">3</button>
+      <button class="pin-key" onclick="app.pinKey('4')">4</button>
+      <button class="pin-key" onclick="app.pinKey('5')">5</button>
+      <button class="pin-key" onclick="app.pinKey('6')">6</button>
+      <button class="pin-key" onclick="app.pinKey('7')">7</button>
+      <button class="pin-key" onclick="app.pinKey('8')">8</button>
+      <button class="pin-key" onclick="app.pinKey('9')">9</button>
+      <button class="pin-key pin-key-secondary" onclick="app.closePinModal()">✕</button>
+      <button class="pin-key" onclick="app.pinKey('0')">0</button>
+      <button class="pin-key pin-key-secondary" onclick="app.pinDel()">⌫</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header" id="header" style="display: none;">
+  <div class="header-title">
+    <img src="logo.png" alt="SDC" class="header-logo header-logo-light" 
+         onerror="this.style.display='none'; this.parentElement.querySelector('.header-icon').style.display='inline';">
+    <img src="logo-dark.png" alt="SDC" class="header-logo header-logo-dark" style="display: none;"
+         onerror="this.style.display='none'; this.parentElement.querySelector('.header-icon').style.display='inline';">
+    <span class="header-icon" style="display: none;">📦</span>
+    <span class="header-text">Scan Entrepôt</span>
+  </div>
+  <div class="header-actions">
+    <span id="status-badge" class="badge badge-offline">Hors ligne</span>
+    <button class="theme-toggle" onclick="app.toggleTheme()" title="Changer de thème">
+      <span id="theme-icon">🌙</span>
+    </button>
+  </div>
+</div>
+
+<!-- SESSION BAR -->
+<div class="session-bar" id="session-bar" style="display: none;">
+  <div class="session-name">
+    <span>👤</span>
+    <span id="session-name-text"></span>
+  </div>
+  <button class="session-logout" onclick="app.logout()">Déconnexion</button>
+</div>
+
+<!-- SCANNER OVERLAY -->
+<div class="scanner-overlay" id="scanner-overlay">
+  <video id="scanner-video" autoplay playsinline></video>
+  <div class="scan-frame"></div>
+  <button class="btn-close-scanner" onclick="app.stopScanner()">✕</button>
+  <div class="scan-hint">Centrez le code-barre dans le cadre</div>
+</div>
+
+<!-- MODAL CONFIRMATION PRODUIT -->
+<div class="modal-overlay" id="modal-confirm-product">
+  <div class="modal-sheet modal-confirm">
+    <div class="modal-handle"></div>
+    <div class="modal-confirm-photo" id="modal-confirm-photo"></div>
+    <div class="modal-confirm-title" id="modal-confirm-title">Porte d'accès ovale 8×5</div>
+    <div class="modal-confirm-ref" id="modal-confirm-ref">MAT-001 · Portes d'accès</div>
+    
+    <div class="modal-confirm-qty">
+      <label>Quantité</label>
+      <div class="modal-confirm-qty-row">
+        <button class="modal-confirm-qty-btn" onclick="app.modalConfirmChangeQty(-1)">−</button>
+        <input type="number" id="modal-confirm-qty-input" value="1" min="0.5" step="0.5" 
+               oninput="app.modalConfirmUpdateQty()" class="modal-confirm-qty-input">
+        <button class="modal-confirm-qty-btn" onclick="app.modalConfirmChangeQty(1)">+</button>
+      </div>
+      <div class="modal-confirm-unite" id="modal-confirm-unite"></div>
+    </div>
+    
+    <div class="modal-confirm-obs">
+      <label>Observations (optionnel)</label>
+      <input type="text" id="modal-confirm-obs" placeholder="Remarques..." autocomplete="off">
+    </div>
+    
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="app.closeConfirmProduct()">✕ Annuler</button>
+      <button class="btn-primary" onclick="app.confirmAddProduct()">✓ Ajouter au panier</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL APERÇU PANIER -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Aperçu du panier</div>
+    <div class="modal-subtitle" id="modal-subtitle"></div>
+    <div class="modal-session" id="modal-session"></div>
+    <div class="modal-items" id="modal-items"></div>
+    <div class="modal-total">
+      <span class="modal-total-label">Total articles</span>
+      <span class="modal-total-value" id="modal-total-value">0</span>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="app.closeModal()">✏️ Modifier</button>
+      <button class="btn-primary" onclick="app.confirmCart()">✓ Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE MOVEMENT -->
+<div class="page active" id="page-movement">
+  <div class="container">
+    <!-- Type de mouvement -->
+    <div class="card">
+      <div class="card-title">Type de mouvement</div>
+      <div class="type-grid">
+        <button class="type-btn active" data-type="Sortie" onclick="app.setType('Sortie', this)">
+          <span>📤 Sortie</span>
+        </button>
+        <button class="type-btn" data-type="Entrée Magasin" onclick="app.setType('Entrée Magasin', this)">
+          <span>📥 Entrée</span>
+        </button>
+        <button class="type-btn" data-type="Retour" onclick="app.setType('Retour', this)">
+          <span>↩️ Retour</span>
+        </button>
+        <button class="type-btn" data-type="Ajustement" onclick="app.setType('Ajustement', this)">
+          <span>⚖️ Ajustement</span>
+        </button>
+        <button class="type-btn" data-type="Transfert" onclick="app.setType('Transfert', this)">
+          <span>⚡ Transfert projet → projet</span>
+        </button>
+      </div>
+      
+      <div id="field-projet-normal">
+        <div class="field">
+          <label>Projet</label>
+          <select id="sel-projet">
+            <option value="">— Sélectionner un projet —</option>
+          </select>
+        </div>
+      </div>
+      
+      <div id="transfert-fields" style="display: none;">
+        <div class="field">
+          <label>Projet source</label>
+          <select id="sel-projet-source">
+            <option value="">— Projet source —</option>
+          </select>
+        </div>
+        <div style="text-align: center; margin: 12px 0; font-size: 24px; color: var(--accent);">↓</div>
+        <div class="field">
+          <label>Projet destination</label>
+          <select id="sel-projet-dest">
+            <option value="">— Projet destination —</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ajouter un article -->
+    <div class="card">
+      <div class="card-title">Ajouter un article</div>
+      
+      <div class="field">
+        <div class="scan-zone">
+          <input type="text" id="ref-input" placeholder="MAT-001 ou scanner" oninput="app.searchRef(this.value)" autocomplete="off">
+          <button class="btn-icon" onclick="app.startScanner()" title="Scanner">📷</button>
+          <button class="btn-icon" id="btn-liste" onclick="app.toggleListePicker()" title="Liste">📋</button>
+        </div>
+        <div id="ref-result" class="ref-result"></div>
+        
+        <div class="liste-picker" id="liste-picker">
+          <div class="liste-picker-header">
+            <span class="liste-picker-title">📋 Sélection par liste</span>
+            <button class="liste-picker-close" onclick="app.toggleListePicker()">Fermer ✕</button>
+          </div>
+          <div class="field">
+            <label>Catégorie</label>
+            <select id="liste-cat" onchange="app.listeChangeCat()">
+              <option value="">— Choisir une catégorie —</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom: 0;">
+            <label>Produit</label>
+            <select id="liste-prod" onchange="app.listeChoixProduit()" disabled>
+              <option value="">— Choisir un produit —</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="qty-row">
+        <button class="qty-btn" onclick="app.changeQty(-1)">−</button>
+        <input type="number" id="qty-input" class="qty-input" value="1" min="0.5" step="0.5">
+        <button class="qty-btn" onclick="app.changeQty(1)">+</button>
+      </div>
+
+      <div class="unite-toggle" id="unite-toggle">
+        <div class="unite-label">Unité de saisie</div>
+        <div class="unite-btns">
+          <button class="unite-btn active" id="btn-unite-stock" onclick="app.setUnite('stock')">
+            <span id="lbl-unite-stock">Caisse</span>
+          </button>
+          <button class="unite-btn" id="btn-unite-util" onclick="app.setUnite('util')">
+            <span id="lbl-unite-util">Unité</span>
+          </button>
+        </div>
+        <div class="unite-hint" id="unite-hint"></div>
+      </div>
+
+      <div class="field">
+        <input type="text" id="obs-input" placeholder="Observations (optionnel)" autocomplete="off">
+      </div>
+
+      <button class="btn-primary" onclick="app.addToCart()">+ Ajouter au panier</button>
+    </div>
+
+    <!-- Panier -->
+    <div class="card">
+      <div class="panier-header">
+        <div class="card-title" style="margin: 0;">Panier</div>
+        <span class="panier-badge" id="panier-badge">0 article</span>
+      </div>
+      <div id="panier-liste">
+        <div class="panier-empty">Aucun article — scannez pour commencer</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btn-preview" onclick="app.openPreview()" disabled>
+      Voir l'aperçu et confirmer →
+    </button>
+
+    <div class="queue-bar">
+      <div class="queue-count">En attente : <strong id="queue-count">0</strong></div>
+      <button class="btn-sync" id="btn-sync" onclick="app.synchronize()">
+        <span id="sync-text">Synchroniser</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE CATALOGUE -->
+<div class="page" id="page-catalogue">
+  <div class="container">
+    <div class="search-bar">
+      <input type="text" id="catalogue-search" placeholder="Rechercher un produit..." oninput="app.searchCatalogue(this.value)" autocomplete="off">
+    </div>
+    <div class="catalogue-tabs" id="catalogue-tabs"></div>
+    <div class="catalogue-grid" id="catalogue-grid"></div>
+  </div>
+</div>
+
+<!-- PAGE HISTORIQUE -->
+<div class="page" id="page-historique">
+  <div class="container">
+    <div class="hist-header">
+      <div>
+        <div class="hist-title">Historique</div>
+        <div class="hist-operator" id="hist-operator">—</div>
+      </div>
+      <button class="btn-secondary" onclick="app.sendEmail()">📧 Email</button>
+    </div>
+    <div class="hist-filters">
+      <button class="hist-filter-btn active" onclick="app.setHistFilter(1, this)">Aujourd'hui</button>
+      <button class="hist-filter-btn" onclick="app.setHistFilter(7, this)">7 jours</button>
+      <button class="hist-filter-btn" onclick="app.setHistFilter(30, this)">30 jours</button>
+      <button class="hist-filter-btn" onclick="app.setHistFilter(0, this)">Tout</button>
+    </div>
+    <div id="hist-content">
+      <div class="hist-empty">Chargement...</div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bottom-nav" style="display: none;">
+  <button class="nav-btn active" onclick="app.switchPage('movement', this)">
+    <span>📦</span>
+    Mouvement
+  </button>
+  <button class="nav-btn" onclick="app.switchPage('catalogue', this)">
+    <span>🖼️</span>
+    Catalogue
+  </button>
+  <button class="nav-btn" onclick="app.switchPage('historique', this)">
+    <span>📋</span>
+    Historique
+  </button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.18.6/umd/index.min.js"></script>
+<script>
+// Configuration
+const CONFIG = {
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxJ7J0yF0actb-oIm_DDVdggDlymPms_-2EIrO4LUPObuRcGwUpPfByE2Y487rAk5EdHg/exec",
+  PHOTO_BASE: "photos/",
+  EMAIL_DEST: "souhail@sdconline.com"
+};
+
+// Données
+const DATA = {
+  PRODUITS: [{"ref":"MAT-001","nom":"Portes d'accès ovale 8×5","cat":"Portes d'accès","unite":"Caisse","uniteUtil":"Unité","facteur":20},{"ref":"MAT-002","nom":"Portes d'accès ovale 12×6","cat":"Portes d'accès","unite":"Caisse","uniteUtil":"Unité","facteur":10},{"ref":"MAT-003","nom":"Portes d'accès ovale 18×10","cat":"Portes d'accès","unite":"Caisse","uniteUtil":"Unité","facteur":10},{"ref":"MAT-004","nom":"Portes d'accès ovale 21×14","cat":"Portes d'accès","unite":"Caisse","uniteUtil":"Unité","facteur":5},{"ref":"MAT-005","nom":"Portes d'accès ovale 25×17","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-006","nom":"Porte D'accès Ronde 8x4 (5-6)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-007","nom":"Porte D'accès Ronde 8x4 (7-9)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-008","nom":"Porte D'accès Ronde 8x4 (10-11)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-009","nom":"Porte D'accès Ronde 12x8 (10-11)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-010","nom":"Porte D'accès Ronde 12x8 (12-14)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-011","nom":"Porte D'accès Ronde 12x8 (15-16)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-012","nom":"Porte D'accès Ronde 12x8 (17-18)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-013","nom":"Porte d'acces ronde 16x12 (17-18)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-014","nom":"Porte d'acces ronde 16x12 (19-20)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-015","nom":"Porte d'acces ronde 16x12 (21-22)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-016","nom":"Porte d'acces ronde 16x12 (23-24)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-017","nom":"Porte d'acces ronde 16x12 (25-28)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-018","nom":"Porte d'acces ronde 16x12 (29-32)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-019","nom":"Porte d'acces ronde 16x12 (33-36)","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-020","nom":"Porte d'acces ronde 21x22","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-021","nom":"Portes d'accès Carré 12 x 12 (architeturales) CTR","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-022","nom":"Portes d'accès Carré 16 X 16 (architeturales) CTR","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-023","nom":"Portes d'accès Carré 24 X 24 (architeturales) CTR","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-024","nom":"Portes Architecturales coupe feu 16 X 16","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-025","nom":"Portes Architecturales coupe feu 24 X 24","cat":"Portes d'accès","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-026","nom":"Feuille de Tôle Galv. 48X96 26G","cat":"Feuille de Tôle","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-027","nom":"Feuille de Tôle 48X96 28G","cat":"Feuille de Tôle","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-028","nom":"RLX Toile Orange 12'X100'","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-029","nom":"RLX Polyéthylène 240' x 2000pc Léger","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-030","nom":"RLX Polyéthylène 120\" x 1500pc Moyen","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-031","nom":"RLX Polyéthylène 120\" x 1500pc Fort","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-032","nom":"RLX Polyéthylène 120\"x150'- 1500pc Léger","cat":"Plastique","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-033","nom":"Film Protection Conduits Auto Collant 24 pouce ( Plastic bleu)","cat":"Plastique","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-034","nom":"Adhésif aérosol 357 482 g./14Oz","cat":"Plastique","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-035","nom":"Pellicule d'emballage XH32512 (1,5PIED)","cat":"Plastique","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-036","nom":"Fermeture à Glissière Collante + Couteau Zipper/Zip Wall HD Adhésive(12 unité)","cat":"Plastique","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-037","nom":"Tape vert double face 2 Pouce (rouleau)","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-038","nom":"Tape bleu ou vert (peintre) 2 Pouce (caisse de 24 rlx)","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-039","nom":"Tape Gris 2'' Nashua (caisse de 24 rlx)","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":24},{"ref":"MAT-040","nom":"Tape Rouge (caisse de 20 rlx)","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":20},{"ref":"MAT-041","nom":"Tape Blanc/transparent double face","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-042","nom":"Protection Tapis/Plancher Un Coté Collant 24'' x 36'","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":50},{"ref":"MAT-043","nom":"Tape Aluminium 1.6 mil 72mmx55m (16/ca","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":16},{"ref":"MAT-044","nom":"Tape Aluminium 1.6 mil 48mmx45,72m (24rlx/caisse","cat":"Tape","unite":"Caisse","uniteUtil":"Unité","facteur":24},{"ref":"MAT-045","nom":"Tape Aluminium 3M Filamenté pour scellent","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-046","nom":"Butyl/Rouleau 1/8x3/8x25","cat":"Tape","unite":"Caisse","uniteUtil":"Rlx","facteur":10},{"ref":"MAT-047","nom":"Butyl pour portes d'access en rouleau (20 RLX)","cat":"Tape","unite":"Rlx","uniteUtil":"","facteur":1},{"ref":"MAT-048","nom":"Tube Plastique 12'' Dia. (Rlx19'' Plat) x 500' x 6 Mil","cat":"Tape","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-049","nom":"Sac 42X48 Noir extra fort 100","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-050","nom":"Sac 35X50 Noir extra fort 100","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-051","nom":"Sac 26X36 Noir extra fort 200","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-052","nom":"Sac 22X24 Noir 500","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-053","nom":"Sac 42x48 transparent extra fort","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-054","nom":"Sac 35x50 transparent extra fort","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-055","nom":"Sac papier cire 500","cat":"Sac","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-056","nom":"Sac 33x48 Trasparent 3 MIL 100 SAC","cat":"Sac","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-057","nom":"Sac 33x50 en rouleau 3 mil (100 sacs) Jaune (Amiante)","cat":"Sac","unite":"Rouleau","uniteUtil":"","facteur":1},{"ref":"MAT-058","nom":"Papier Toilette (jumbo) GO GREEN G9942100","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-059","nom":"Papier Toilette SCOTT 4804002 (petits rouleaux)","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-060","nom":"Papier toilette 2 épaisseurs 1000' G9360004-12/CAISSE (Jumbo)","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-061","nom":"Papier à Main GO GREEN G9942302","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-062","nom":"Papier à main 8\" X 8 ROULEAUX G9360015","cat":"Papier","unite":"Caisse","uniteUtil":"","facteur":1},{"ref":"MAT-063","nom":"Masque Papier 3M - N95 (20 unité par boite) (10 boite / caisse)","cat":"Masque","unite":"Caisse","uniteUtil":"Unité","facteur":20},{"ref":"MAT-064","nom":"Demi Masque Respiratoire Silicone Series 7700 Honywell","cat":"Masque","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-065","nom":"Cartouche Gaz organique et acide Filtre P100 (2 par paquet) Mageta/Jaune","cat":"Masque","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-066","nom":"Cartouche Vapeur/Organique Filtre P100 (2 par paquet) Mageta/Noir","cat":"Masque","unite":"Paquet","uniteUtil":"","facteur":1},{"ref":"MAT-067","nom":"Cartouche pour Demi Masque Hepa P100 (2 par paquet) Mageta","cat":"Masque","unite":"Paquet","uniteUtil":"","facteur":1},{"ref":"MAT-068","nom":"Serviettes rafraichissantes alcool pour masque (100 par boite)","cat":"Masque","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-069","nom":"Serviettes de chlorure de benzalkonium pour masque (100)","cat":"Masque","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-070","nom":"Masque full face avec aide respiratoire , batterie et chargeur","cat":"Masque","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-071","nom":"Gant Nitril disposable NOIR XL 8 mil (50 unite par boite) (10 boite / caisse) Jaune","cat":"Gants","unite":"Boîte","uniteUtil":"","facteur":1},{"ref":"MAT-072","nom":"Gant PRO XL INDUSTRIELS EN CAOUTCHOUC 15 mil (Prot. produits corrosifs)","cat":"Gants","unite":"Paire","uniteUtil":"","facteur":1},{"ref":"MAT-073","nom":"Gant Nitrile Bleu 4 mil X 10 boites","cat":"Gants","unite":"caisse","uniteUtil":"boite","facteur":10},{"ref":"MAT-074","nom":"Gant coton polyester antidérapant","cat":"Gants","unite":"Paire","uniteUtil":"","facteur":1},{"ref":"MAT-075","nom":"Gant Nitril disposable NOIR XL 5 mil (100 unite par boite) (10 boite / caisse) Rouge","cat":"Gants","unite":"Boîte","uniteUtil":"","facteur":10},{"ref":"MAT-076","nom":"Bouchon d`oreille en mousse","cat":"EPI","unite":"Paquet","uniteUtil":"","facteur":1},{"ref":"MAT-077","nom":"Casque de protection auditive","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-078","nom":"Protecteur faciel (visiere claire)","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-079","nom":"Trousse de premiers soins","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-080","nom":"Rinçage oculaire","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-081","nom":"Support pour visière North","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-082","nom":"Solution Isotonique sterile 1L","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-083","nom":"Lunette sécuritaires claires Z-TECK","cat":"EPI","unite":"Unité","uniteUtil":"","facteur":1},{"ref":"MAT-084","nom":"Tyvek/X-Guard Vêtement Polypro Bleu XL (20 unité)","cat":"Tyvec","unite":"Caisse","uniteUtil":"Unité","facteur":20},{"ref":"MAT-085","nom":"Tyvek/X-Guard Vêtement Polypro Blanc XL (25 unité)","cat":"Tyvec","unite":"Caisse","uniteUtil":"Unité","facteur":25},{"ref":"MAT-086","nom":"Tyvek/X-Guard Vêtement Polypro Blanc 2XL (25 unité)","cat":"Tyvec","unite":"Caisse","uniteUtil":"Unité","facteur":25},{"ref":"MAT-087","nom":"Tyvek/X-Guard Vêtement Polypro Blanc 3XL (25 unité)","cat":"Tyvec","unite":"Caisse","uniteUtil":"Unité","facteur":25},{"ref":"MAT-088","nom":"Couvre Chaussure Non Conducteur XL (200 par Boîte)","cat":"Tyvec","unite":"Caisse","uniteUtil":"","facteur":1}],
+  
+  PROJETS: [{"code":"SDC-754","nom":"Nettoyage OMHM - Hab. Madelaine","employe":"Gonzalo H."},{"code":"SDC-740","nom":"Nettoyage OMHM - Hab. Beaubien","employe":"José H."}],
+  
+  OPERATEURS: [
+    {"nom":"Gonzalo H.","pin":"6594","role":"Chef d'équipe"},
+    {"nom":"José H.","pin":"5678","role":"Chef d'équipe"},
+    {"nom":"Cézar T.","pin":"9012","role":"Chef d'équipe"},
+    {"nom":"Alain B.","pin":"3456","role":"Chef d'équipe"},
+    {"nom":"Mario","pin":"7890","role":"Chef d'équipe"},
+    {"nom":"Walther C.","pin":"8610","role":"Chef d'équipe"},
+    {"nom":"Sohail S.","pin":"1955","role":"Administrateur"},
+    {"nom":"Christian T.","pin":"2026","role":"Administrateur"},
+    {"nom":"Nancy C.","pin":"2025","role":"Administrateur"}
+  ],
+  
+  CAT_COLORS: {
+    "Portes d'accès": "#667eea",
+    "Feuille de Tôle": "#f093fb",
+    "Plastique": "#4facfe",
+    "Tape": "#43e97b",
+    "Sac": "#fa709a",
+    "Papier": "#6dd5ed",
+    "Masque": "#ff9a9e",
+    "Gants": "#a18cd1",
+    "EPI": "#fbc2eb",
+    "Tyvec": "#a6c0fe"
+  },
+  
+  CAT_ICONS: {
+    "Portes d'accès": "🚪",
+    "Feuille de Tôle": "🔩",
+    "Plastique": "🛍️",
+    "Tape": "📦",
+    "Sac": "🗑️",
+    "Papier": "🧻",
+    "Masque": "😷",
+    "Gants": "🧤",
+    "EPI": "⛑️",
+    "Tyvec": "🥼"
+  }
+};
+
+// Application principale
+const app = {
+  state: {
+    currentOperator: null,
+    movementType: 'Sortie',
+    cart: [],
+    queue: JSON.parse(localStorage.getItem('mvQueue') || '[]'),
+    currentProd: null,
+    currentUniteMode: 'stock',
+    currentCatFilter: '',
+    histDaysFilter: 1,
+    scanner: null,
+    pinBuffer: '',
+    theme: localStorage.getItem('theme') || 'dark',
+    tempProduct: null,
+    tempQty: null,
+    tempObs: null
+  },
+
+  init() {
+    // Appliquer le thème dès le chargement (avant la connexion)
+    const logoLight = document.querySelector('.header-logo-light');
+    const logoDark = document.querySelector('.header-logo-dark');
+    const pinThemeIcon = document.getElementById('pin-theme-icon');
+    
+    if (this.state.theme === 'light') {
+      document.body.classList.add('theme-light');
+      document.getElementById('theme-icon').textContent = '☀️';
+      if (pinThemeIcon) pinThemeIcon.textContent = '☀️';
+      
+      // Afficher le bon logo
+      if (logoLight) logoLight.style.display = 'block';
+      if (logoDark) logoDark.style.display = 'none';
+    } else {
+      // Mode sombre (défaut)
+      if (pinThemeIcon) pinThemeIcon.textContent = '🌙';
+      if (logoLight) logoLight.style.display = 'none';
+      if (logoDark) logoDark.style.display = 'block';
+    }
+    
+    // NE PAS peupler les selects de projets ici - on le fera après connexion
+    // pour filtrer selon l'utilisateur
+    
+    // Peupler le sélecteur de catégories
+    const categories = [...new Set(DATA.PRODUITS.map(p => p.cat))];
+    const listeCat = document.getElementById('liste-cat');
+    categories.forEach(cat => {
+      const option = document.createElement('option');
+      option.value = cat;
+      option.textContent = cat;
+      listeCat.appendChild(option);
+    });
+    
+    // Initialiser le catalogue
+    this.state.currentCatFilter = categories[0] || '';
+    
+    // Vérifier la connexion
+    this.checkOnline();
+    setInterval(() => this.checkOnline(), 10000);
+    
+    // Mettre à jour le compteur de queue
+    this.updateQueueCount();
+  },
+
+  // Nouvelle fonction : Peupler les projets selon le rôle
+  populateProjets() {
+    const operator = DATA.OPERATEURS.find(o => o.nom === this.state.currentOperator);
+    if (!operator) return;
+    
+    const isAdmin = operator.role && 
+      (operator.role.toLowerCase().includes('administrateur') || 
+       operator.role.toLowerCase().includes('admin'));
+    
+    // Filtrer les projets
+    let projetsDisponibles = [];
+    
+    if (isAdmin) {
+      // Administrateur : tous les projets actifs
+      projetsDisponibles = DATA.PROJETS;
+    } else {
+      // Chef d'équipe : seulement ses projets assignés
+      projetsDisponibles = DATA.PROJETS.filter(p => 
+        p.employe && p.employe.trim().toLowerCase() === this.state.currentOperator.toLowerCase()
+      );
+    }
+    
+    // Peupler les 3 selects
+    ['sel-projet', 'sel-projet-source', 'sel-projet-dest'].forEach(id => {
+      const select = document.getElementById(id);
+      select.innerHTML = '<option value="">— Sélectionner un projet —</option>';
+      
+      projetsDisponibles.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.code;
+        option.textContent = `${p.code} — ${p.nom}`;
+        select.appendChild(option);
+      });
+    });
+    
+    // Afficher un message si aucun projet
+    if (projetsDisponibles.length === 0 && !isAdmin) {
+      this.showToast('⚠️ Aucun projet assigné à votre compte');
+    }
+  },
+
+  // PIN Functions
+  // PIN Screen - Connexion directe par code
+  
+  openPinModal() {
+    document.getElementById('pin-modal').classList.add('active');
+    this.state.pinBuffer = '';
+    this.updatePinDots();
+    document.getElementById('pin-error').textContent = '';
+    this.vibrate(30);
+  },
+  
+  closePinModal() {
+    document.getElementById('pin-modal').classList.remove('active');
+    this.state.pinBuffer = '';
+    this.updatePinDots();
+    document.getElementById('pin-error').textContent = '';
+  },
+
+  pinKey(key) {
+    if (this.state.pinBuffer.length >= 4) return;
+    
+    this.state.pinBuffer += key;
+    this.updatePinDots();
+    this.vibrate(30);
+    
+    if (this.state.pinBuffer.length === 4) {
+      // Valider automatiquement quand 4 chiffres sont entrés
+      setTimeout(() => this.validatePin(), 200);
+    }
+  },
+
+  pinDel() {
+    this.state.pinBuffer = this.state.pinBuffer.slice(0, -1);
+    this.updatePinDots();
+    document.getElementById('pin-error').textContent = '';
+  },
+
+  pinClear() {
+    this.state.pinBuffer = '';
+    this.updatePinDots();
+    document.getElementById('pin-error').textContent = '';
+  },
+
+  updatePinDots() {
+    document.querySelectorAll('.pin-dot').forEach((dot, i) => {
+      dot.classList.toggle('filled', i < this.state.pinBuffer.length);
+    });
+  },
+
+  validatePin() {
+    // Chercher l'opérateur qui correspond à ce PIN
+    const operator = DATA.OPERATEURS.find(o => o.pin === this.state.pinBuffer);
+    
+    if (operator) {
+      // Succès - PIN trouvé
+      this.closePinModal(); // Fermer le modal PIN
+      
+      this.state.currentOperator = operator.nom;
+      document.getElementById('pin-screen').classList.add('hidden');
+      document.getElementById('header').style.display = 'flex';
+      document.getElementById('session-bar').style.display = 'flex';
+      document.getElementById('bottom-nav').style.display = 'flex';
+      document.getElementById('session-name-text').textContent = operator.nom;
+      
+      // Peupler les projets selon le rôle de l'opérateur
+      this.populateProjets();
+      
+      this.vibrate([50, 100, 50]);
+      
+      // Message de bienvenue personnalisé
+      const isAdmin = operator.role && 
+        (operator.role.toLowerCase().includes('administrateur') || 
+         operator.role.toLowerCase().includes('admin'));
+      
+      const welcomeMsg = isAdmin ? 
+        `✓ Connecté : ${operator.nom} (Administrateur)` : 
+        `✓ Connecté : ${operator.nom} (${operator.role || 'Chef d\'équipe'})`;
+      
+      this.showToast(welcomeMsg, 3000);
+      
+      // Reset PIN buffer
+      this.state.pinBuffer = '';
+    } else {
+      // Échec - PIN incorrect
+      document.getElementById('pin-error').textContent = '❌ Code PIN incorrect';
+      this.state.pinBuffer = '';
+      this.updatePinDots();
+      this.vibrate(300);
+      
+      // Effacer le message d'erreur après 2 secondes
+      setTimeout(() => {
+        document.getElementById('pin-error').textContent = '';
+      }, 2000);
+    }
+  },
+
+  logout() {
+    if (this.state.cart.length > 0) {
+      if (!confirm('Votre panier contient des articles. Voulez-vous vraiment vous déconnecter ?')) {
+        return;
+      }
+    }
+    
+    this.state.currentOperator = null;
+    this.state.cart = [];
+    this.state.pinBuffer = '';
+    
+    document.getElementById('pin-screen').classList.remove('hidden');
+    document.getElementById('header').style.display = 'none';
+    document.getElementById('session-bar').style.display = 'none';
+    document.getElementById('bottom-nav').style.display = 'none';
+    document.getElementById('pin-error').textContent = '';
+    
+    this.updatePinDots();
+    this.renderCart();
+    this.vibrate(50);
+  },
+
+  // Theme
+  toggleTheme() {
+    const logoLight = document.querySelector('.header-logo-light');
+    const logoDark = document.querySelector('.header-logo-dark');
+    
+    if (this.state.theme === 'dark') {
+      this.state.theme = 'light';
+      document.body.classList.add('theme-light');
+      document.getElementById('theme-icon').textContent = '☀️';
+      
+      // Synchroniser l'icône sur l'écran PIN
+      const pinThemeIcon = document.getElementById('pin-theme-icon');
+      if (pinThemeIcon) pinThemeIcon.textContent = '☀️';
+      
+      // Changer les logos
+      if (logoLight) logoLight.style.display = 'block';
+      if (logoDark) logoDark.style.display = 'none';
+    } else {
+      this.state.theme = 'dark';
+      document.body.classList.remove('theme-light');
+      document.getElementById('theme-icon').textContent = '🌙';
+      
+      // Synchroniser l'icône sur l'écran PIN
+      const pinThemeIcon = document.getElementById('pin-theme-icon');
+      if (pinThemeIcon) pinThemeIcon.textContent = '🌙';
+      
+      // Changer les logos
+      if (logoLight) logoLight.style.display = 'none';
+      if (logoDark) logoDark.style.display = 'block';
+    }
+    
+    localStorage.setItem('theme', this.state.theme);
+    this.vibrate(50);
+  },
+
+  // Online status
+  checkOnline() {
+    const badge = document.getElementById('status-badge');
+    const syncBtn = document.getElementById('btn-sync');
+    
+    if (navigator.onLine && CONFIG.SCRIPT_URL) {
+      badge.className = 'badge badge-online';
+      badge.textContent = 'En ligne';
+      syncBtn.disabled = false;
+    } else {
+      badge.className = 'badge badge-offline';
+      badge.textContent = 'Hors ligne';
+      syncBtn.disabled = true;
+    }
+  },
+
+  // Type de mouvement
+  setType(type, el) {
+    this.state.movementType = type;
+    
+    document.querySelectorAll('.type-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    el.classList.add('active');
+    
+    const isTransfert = type === 'Transfert';
+    const needProject = type !== 'Entrée Magasin' && type !== 'Ajustement';
+    
+    document.getElementById('field-projet-normal').style.display = 
+      isTransfert ? 'none' : (needProject ? 'block' : 'none');
+    document.getElementById('transfert-fields').style.display = 
+      isTransfert ? 'block' : 'none';
+      
+    this.vibrate(50);
+  },
+
+  // Recherche de référence
+  searchRef(val) {
+    const result = document.getElementById('ref-result');
+    val = val.trim().toUpperCase();
+    
+    if (!val) {
+      result.textContent = '';
+      result.className = 'ref-result';
+      this.hideUniteToggle();
+      this.state.currentProd = null;
+      return;
+    }
+    
+    const prod = DATA.PRODUITS.find(p => p.ref.toUpperCase() === val);
+    
+    if (prod) {
+      result.className = 'ref-result success';
+      result.textContent = '✓ ' + prod.nom + ' · ' + prod.cat;
+      this.state.currentProd = prod;
+      this.showUniteToggle(prod);
+    } else {
+      result.className = 'ref-result error';
+      result.textContent = '✗ Référence introuvable';
+      this.hideUniteToggle();
+      this.state.currentProd = null;
+    }
+  },
+
+  // Unité toggle
+  showUniteToggle(prod) {
+    if (!prod.uniteUtil) {
+      this.hideUniteToggle();
+      return;
+    }
+    
+    document.getElementById('lbl-unite-stock').textContent = prod.unite;
+    document.getElementById('lbl-unite-util').textContent = prod.uniteUtil;
+    document.getElementById('unite-hint').textContent = 
+      `1 ${prod.unite} = ${prod.facteur} ${prod.uniteUtil}`;
+    
+    const toggle = document.getElementById('unite-toggle');
+    toggle.classList.add('visible');
+    
+    this.setUnite('stock');
+  },
+
+  hideUniteToggle() {
+    const toggle = document.getElementById('unite-toggle');
+    toggle.classList.remove('visible');
+    this.state.currentUniteMode = 'stock';
+  },
+
+  setUnite(mode) {
+    this.state.currentUniteMode = mode;
+    document.getElementById('btn-unite-stock').classList.toggle('active', mode === 'stock');
+    document.getElementById('btn-unite-util').classList.toggle('active', mode === 'util');
+    this.vibrate(50);
+  },
+
+  getUniteSaisie() {
+    if (!this.state.currentProd) return 'Unité stock';
+    if (!this.state.currentProd.uniteUtil) return this.state.currentProd.unite;
+    return this.state.currentUniteMode === 'stock' ? 
+      this.state.currentProd.unite : this.state.currentProd.uniteUtil;
+  },
+
+  // Quantité
+  changeQty(delta) {
+    const input = document.getElementById('qty-input');
+    const newVal = Math.max(0.5, (parseFloat(input.value) || 0) + delta);
+    input.value = newVal;
+    this.vibrate(30);
+  },
+
+  // Liste picker
+  toggleListePicker() {
+    const picker = document.getElementById('liste-picker');
+    const btn = document.getElementById('btn-liste');
+    const isOpen = picker.classList.toggle('open');
+    btn.classList.toggle('active', isOpen);
+    
+    if (!isOpen) {
+      document.getElementById('liste-cat').value = '';
+      document.getElementById('liste-prod').value = '';
+      document.getElementById('liste-prod').disabled = true;
+    }
+    
+    this.vibrate(50);
+  },
+
+  listeChangeCat() {
+    const cat = document.getElementById('liste-cat').value;
+    const prodSelect = document.getElementById('liste-prod');
+    
+    prodSelect.innerHTML = '<option value="">— Choisir un produit —</option>';
+    prodSelect.disabled = !cat;
+    
+    if (!cat) return;
+    
+    DATA.PRODUITS.filter(p => p.cat === cat).forEach(p => {
+      const option = document.createElement('option');
+      option.value = p.ref;
+      option.textContent = p.nom.length > 50 ? p.nom.substring(0, 50) + '…' : p.nom;
+      prodSelect.appendChild(option);
+    });
+  },
+
+  listeChoixProduit() {
+    const ref = document.getElementById('liste-prod').value;
+    if (!ref) return;
+    
+    document.getElementById('ref-input').value = ref;
+    this.searchRef(ref);
+    
+    // NE PAS fermer le picker - garder les sélecteurs visibles
+    // Les sélecteurs restent affichés pour permettre de changer facilement
+    
+    this.vibrate(50);
+    
+    // Focus sur la quantité pour saisie rapide
+    setTimeout(() => {
+      document.getElementById('qty-input').focus();
+      document.getElementById('qty-input').select();
+    }, 100);
+  },
+
+  // Scanner
+  startScanner() {
+    document.getElementById('scanner-overlay').classList.add('active');
+    
+    const codeReader = new ZXing.BrowserMultiFormatReader();
+    this.state.scanner = codeReader;
+    
+    codeReader.decodeFromConstraints(
+      { video: { facingMode: 'environment' } },
+      'scanner-video',
+      (result) => {
+        if (result) {
+          const code = result.getText();
+          this.stopScanner();
+          document.getElementById('ref-input').value = code;
+          this.searchRef(code);
+          this.showToast('✓ Code scanné : ' + code);
+          this.vibrate([50, 100, 50]);
+        }
+      }
+    );
+  },
+
+  stopScanner() {
+    if (this.state.scanner) {
+      try {
+        this.state.scanner.reset();
+      } catch(e) {}
+      this.state.scanner = null;
+    }
+    document.getElementById('scanner-overlay').classList.remove('active');
+  },
+
+  // Panier
+  addToCart() {
+    const ref = document.getElementById('ref-input').value.trim();
+    const qty = parseFloat(document.getElementById('qty-input').value);
+    const obs = document.getElementById('obs-input').value;
+    
+    if (!ref) {
+      this.showToast('⚠️ Scannez ou saisissez une référence');
+      this.vibrate(200);
+      return;
+    }
+    
+    if (!qty || qty <= 0) {
+      this.showToast('⚠️ Quantité invalide');
+      this.vibrate(200);
+      return;
+    }
+    
+    if ((this.state.movementType === 'Sortie' || this.state.movementType === 'Retour') && 
+        !document.getElementById('sel-projet').value) {
+      this.showToast('⚠️ Sélectionnez un projet');
+      this.vibrate(200);
+      return;
+    }
+    
+    if (this.state.movementType === 'Transfert') {
+      const src = document.getElementById('sel-projet-source').value;
+      const dst = document.getElementById('sel-projet-dest').value;
+      if (!src || !dst) {
+        this.showToast('⚠️ Sélectionnez les deux projets');
+        this.vibrate(200);
+        return;
+      }
+    }
+    
+    const prod = DATA.PRODUITS.find(p => p.ref.toUpperCase() === ref.toUpperCase());
+    
+    if (!prod) {
+      this.showToast('⚠️ Produit non trouvé');
+      this.vibrate(200);
+      return;
+    }
+    
+    // Ouvrir le modal de confirmation
+    this.openConfirmProduct(prod, qty, obs);
+  },
+
+  openConfirmProduct(prod, qty, obs) {
+    // Sauvegarder les données temporaires
+    this.state.tempProduct = prod;
+    this.state.tempQty = qty;
+    this.state.tempObs = obs;
+    
+    // Remplir le modal
+    const color = DATA.CAT_COLORS[prod.cat] || '#00d4ff';
+    const icon = DATA.CAT_ICONS[prod.cat] || '📦';
+    
+    // Photo
+    const photoContainer = document.getElementById('modal-confirm-photo');
+    photoContainer.innerHTML = `
+      <img src="${CONFIG.PHOTO_BASE}${prod.ref}.jpg" 
+           onerror="this.outerHTML='<div class=modal-confirm-photo-placeholder style=color:${color}>${icon}</div>'">
+    `;
+    
+    // Titre et référence
+    document.getElementById('modal-confirm-title').textContent = prod.nom;
+    document.getElementById('modal-confirm-ref').textContent = `${prod.ref} · ${prod.cat}`;
+    
+    // Quantité
+    document.getElementById('modal-confirm-qty-input').value = qty;
+    
+    // Unité
+    const uniteDiv = document.getElementById('modal-confirm-unite');
+    const uniteSaisie = this.getUniteSaisie();
+    const uniteAffichee = (this.state.currentUniteMode === 'util' && prod.uniteUtil) ? 
+      prod.uniteUtil : prod.unite;
+    
+    if (prod.uniteUtil && prod.facteur > 1) {
+      uniteDiv.innerHTML = `
+        <strong>${qty} ${uniteSaisie}</strong> = 
+        ${this.state.currentUniteMode === 'stock' ? qty * prod.facteur : qty / prod.facteur} ${this.state.currentUniteMode === 'stock' ? prod.uniteUtil : prod.unite}
+      `;
+      uniteDiv.style.display = 'block';
+    } else {
+      uniteDiv.innerHTML = `<strong>${qty} ${uniteAffichee}</strong>`;
+      uniteDiv.style.display = 'block';
+    }
+    
+    // Observations
+    document.getElementById('modal-confirm-obs').value = obs || '';
+    
+    // Afficher le modal
+    document.getElementById('modal-confirm-product').classList.add('active');
+    this.vibrate(50);
+  },
+
+  modalConfirmChangeQty(delta) {
+    const input = document.getElementById('modal-confirm-qty-input');
+    const newVal = Math.max(0.5, (parseFloat(input.value) || 0) + delta);
+    input.value = newVal;
+    this.modalConfirmUpdateQty();
+    this.vibrate(30);
+  },
+
+  modalConfirmUpdateQty() {
+    const qty = parseFloat(document.getElementById('modal-confirm-qty-input').value);
+    const prod = this.state.tempProduct;
+    
+    if (!prod || !qty) return;
+    
+    const uniteDiv = document.getElementById('modal-confirm-unite');
+    const uniteSaisie = this.getUniteSaisie();
+    const uniteAffichee = (this.state.currentUniteMode === 'util' && prod.uniteUtil) ? 
+      prod.uniteUtil : prod.unite;
+    
+    if (prod.uniteUtil && prod.facteur > 1) {
+      const converted = this.state.currentUniteMode === 'stock' ? 
+        qty * prod.facteur : qty / prod.facteur;
+      const convertedUnit = this.state.currentUniteMode === 'stock' ? 
+        prod.uniteUtil : prod.unite;
+      
+      uniteDiv.innerHTML = `
+        <strong>${qty} ${uniteSaisie}</strong> = 
+        ${converted.toFixed(1)} ${convertedUnit}
+      `;
+    } else {
+      uniteDiv.innerHTML = `<strong>${qty} ${uniteAffichee}</strong>`;
+    }
+  },
+
+  closeConfirmProduct() {
+    document.getElementById('modal-confirm-product').classList.remove('active');
+    this.state.tempProduct = null;
+    this.state.tempQty = null;
+    this.state.tempObs = null;
+  },
+
+  confirmAddProduct() {
+    const prod = this.state.tempProduct;
+    const qty = parseFloat(document.getElementById('modal-confirm-qty-input').value);
+    const obs = document.getElementById('modal-confirm-obs').value;
+    
+    if (!prod || !qty || qty <= 0) {
+      this.showToast('⚠️ Quantité invalide');
+      return;
+    }
+    
+    const uniteSaisie = this.getUniteSaisie();
+    const uniteAffichee = (this.state.currentUniteMode === 'util' && prod.uniteUtil) ? 
+      prod.uniteUtil : prod.unite;
+    
+    this.state.cart.push({
+      id: Date.now(),
+      ref: prod.ref,
+      nom: prod.nom,
+      cat: prod.cat,
+      unite: uniteAffichee,
+      uniteSaisie: uniteSaisie,
+      qte: qty,
+      obs: obs
+    });
+    
+    // Fermer le modal
+    this.closeConfirmProduct();
+    
+    // Reset les champs
+    document.getElementById('ref-input').value = '';
+    document.getElementById('ref-result').textContent = '';
+    document.getElementById('ref-result').className = 'ref-result';
+    document.getElementById('qty-input').value = '1';
+    document.getElementById('obs-input').value = '';
+    this.hideUniteToggle();
+    this.state.currentProd = null;
+    
+    this.renderCart();
+    this.showToast('✓ Ajouté au panier');
+    this.vibrate([50, 100, 50]);
+    
+    // Auto-focus sur le champ de référence
+    setTimeout(() => {
+      document.getElementById('ref-input').focus();
+    }, 100);
+  },
+
+  removeFromCart(id) {
+    this.state.cart = this.state.cart.filter(item => item.id !== id);
+    this.renderCart();
+    this.vibrate(50);
+    this.showToast('Article supprimé');
+  },
+
+  updateCartQty(id, delta) {
+    const item = this.state.cart.find(i => i.id === id);
+    if (!item) return;
+    
+    const newQty = Math.max(0.5, item.qte + delta);
+    
+    // Si quantité devient 0, supprimer l'article
+    if (newQty < 0.5) {
+      this.removeFromCart(id);
+      return;
+    }
+    
+    item.qte = newQty;
+    this.renderCart();
+    this.vibrate(30);
+  },
+
+  renderCart() {
+    const liste = document.getElementById('panier-liste');
+    const badge = document.getElementById('panier-badge');
+    const btn = document.getElementById('btn-preview');
+    
+    badge.textContent = this.state.cart.length + ' article' + (this.state.cart.length > 1 ? 's' : '');
+    
+    if (this.state.cart.length === 0) {
+      liste.innerHTML = '<div class="panier-empty">Aucun article — scannez pour commencer</div>';
+      btn.disabled = true;
+      return;
+    }
+    
+    liste.innerHTML = this.state.cart.map(item => {
+      const color = DATA.CAT_COLORS[item.cat] || '#00d4ff';
+      const icon = DATA.CAT_ICONS[item.cat] || '📦';
+      const nom = item.nom.length > 40 ? item.nom.substring(0, 40) + '…' : item.nom;
+      
+      return `
+        <div class="panier-item">
+          ${this.getPhotoHTML(item.ref, color, icon, 50, '10px')}
+          <div class="panier-info">
+            <div class="panier-nom">${nom}</div>
+            <div class="panier-meta">${item.ref}${item.obs ? ' · ' + item.obs : ''}</div>
+          </div>
+          <div class="panier-qty-controls">
+            <button class="panier-qty-btn panier-qty-minus" onclick="app.updateCartQty(${item.id}, -1)" title="Diminuer">−</button>
+            <div class="panier-qty-value">${item.qte}</div>
+            <button class="panier-qty-btn panier-qty-plus" onclick="app.updateCartQty(${item.id}, 1)" title="Augmenter">+</button>
+          </div>
+          <button class="btn-delete" onclick="app.removeFromCart(${item.id})" title="Supprimer">×</button>
+        </div>
+      `;
+    }).join('');
+    
+    btn.disabled = false;
+  },
+
+  // Modal
+  openPreview() {
+    if (this.state.cart.length === 0) return;
+    
+    const isTransfert = this.state.movementType === 'Transfert';
+    
+    if (isTransfert) {
+      const src = document.getElementById('sel-projet-source').value;
+      const dst = document.getElementById('sel-projet-dest').value;
+      if (!src || !dst) {
+        this.showToast('⚠️ Sélectionnez les deux projets');
+        return;
+      }
+      if (src === dst) {
+        this.showToast('⚠️ Les projets ne peuvent pas être identiques');
+        return;
+      }
+      
+      document.getElementById('modal-session').innerHTML = `
+        <div class="modal-session-item">
+          <div class="modal-session-label">Type</div>
+          <div class="modal-session-value">Transfert</div>
+        </div>
+        <div class="modal-session-item">
+          <div class="modal-session-label">Source</div>
+          <div class="modal-session-value">${src}</div>
+        </div>
+        <div class="modal-session-item">
+          <div class="modal-session-label">Destination</div>
+          <div class="modal-session-value">${dst}</div>
+        </div>
+        <div class="modal-session-item">
+          <div class="modal-session-label">Opérateur</div>
+          <div class="modal-session-value">${this.state.currentOperator}</div>
+        </div>
+      `;
+    } else {
+      const projet = document.getElementById('sel-projet').value;
+      const today = new Date().toLocaleDateString('fr-CA');
+      
+      document.getElementById('modal-session').innerHTML = `
+        <div class="modal-session-item">
+          <div class="modal-session-label">Type</div>
+          <div class="modal-session-value">${this.state.movementType}</div>
+        </div>
+        <div class="modal-session-item">
+          <div class="modal-session-label">Projet</div>
+          <div class="modal-session-value">${projet || '—'}</div>
+        </div>
+        <div class="modal-session-item">
+          <div class="modal-session-label">Opérateur</div>
+          <div class="modal-session-value">${this.state.currentOperator}</div>
+        </div>
+        <div class="modal-session-item">
+          <div class="modal-session-label">Date</div>
+          <div class="modal-session-value">${today}</div>
+        </div>
+      `;
+    }
+    
+    document.getElementById('modal-subtitle').textContent = 
+      this.state.cart.length + ' article(s) à enregistrer';
+    
+    document.getElementById('modal-items').innerHTML = this.state.cart.map(item => {
+      const color = DATA.CAT_COLORS[item.cat] || '#00d4ff';
+      const icon = DATA.CAT_ICONS[item.cat] || '📦';
+      const nom = item.nom.length > 45 ? item.nom.substring(0, 45) + '…' : item.nom;
+      
+      return `
+        <div class="panier-item">
+          ${this.getPhotoHTML(item.ref, color, icon, 50, '10px')}
+          <div class="panier-info">
+            <div class="panier-nom">${nom}</div>
+            <div class="panier-meta">${item.ref}${item.obs ? ' · ' + item.obs : ''}</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="panier-qty">
+              ${item.qte}
+              <span class="panier-qty-unit">${item.unite}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    document.getElementById('modal-total-value').textContent = this.state.cart.length;
+    document.getElementById('modal-overlay').classList.add('active');
+    this.vibrate(50);
+  },
+
+  closeModal() {
+    document.getElementById('modal-overlay').classList.remove('active');
+  },
+
+  confirmCart() {
+    this.closeModal();
+    
+    const now = new Date().toLocaleString('fr-CA', {
+      timeZone: 'America/Toronto',
+      hour12: false
+    }).replace(',', '');
+    
+    const isTransfert = this.state.movementType === 'Transfert';
+    const projet = document.getElementById('sel-projet').value;
+    const srcProjet = document.getElementById('sel-projet-source').value;
+    const dstProjet = document.getElementById('sel-projet-dest').value;
+    
+    this.state.cart.forEach(item => {
+      if (isTransfert) {
+        // Transfert : 2 mouvements
+        this.state.queue.push({
+          id: Date.now() + Math.random(),
+          date: now,
+          ref: item.ref,
+          nom: item.nom,
+          type: 'Retour',
+          projet: srcProjet,
+          qte: item.qte,
+          unite: item.unite,
+          uniteSaisie: item.uniteSaisie,
+          operateur: this.state.currentOperator,
+          obs: `[Transfert→${dstProjet}] ${item.obs || ''}`,
+          synced: false
+        });
+        
+        this.state.queue.push({
+          id: Date.now() + Math.random() + 1,
+          date: now,
+          ref: item.ref,
+          nom: item.nom,
+          type: 'Sortie',
+          projet: dstProjet,
+          qte: item.qte,
+          unite: item.unite,
+          uniteSaisie: item.uniteSaisie,
+          operateur: this.state.currentOperator,
+          obs: `[Transfert de ${srcProjet}] ${item.obs || ''}`,
+          synced: false
+        });
+      } else {
+        // Mouvement normal
+        this.state.queue.push({
+          id: Date.now() + Math.random(),
+          date: now,
+          ref: item.ref,
+          nom: item.nom,
+          type: this.state.movementType,
+          projet: projet,
+          qte: item.qte,
+          unite: item.unite,
+          uniteSaisie: item.uniteSaisie,
+          operateur: this.state.currentOperator,
+          obs: item.obs || '',
+          synced: false
+        });
+      }
+    });
+    
+    const nbMouvements = isTransfert ? this.state.cart.length * 2 : this.state.cart.length;
+    localStorage.setItem('mvQueue', JSON.stringify(this.state.queue));
+    
+    this.state.cart = [];
+    this.renderCart();
+    this.updateQueueCount();
+    
+    this.showToast(`✓ ${nbMouvements} mouvement(s) enregistré(s)`);
+    this.vibrate([50, 100, 50, 100, 50]);
+    
+    // Synchroniser si en ligne
+    if (navigator.onLine && CONFIG.SCRIPT_URL) {
+      setTimeout(() => this.synchronize(), 1000);
+    }
+  },
+
+  // Queue
+  updateQueueCount() {
+    const unsync = this.state.queue.filter(x => !x.synced).length;
+    document.getElementById('queue-count').textContent = unsync;
+  },
+
+  async synchronize() {
+    const unsync = this.state.queue.filter(x => !x.synced);
+    
+    if (unsync.length === 0) {
+      this.showToast('Aucun mouvement à synchroniser');
+      return;
+    }
+    
+    const btn = document.getElementById('btn-sync');
+    const syncText = document.getElementById('sync-text');
+    const originalText = syncText.textContent;
+    
+    btn.disabled = true;
+    syncText.innerHTML = '<span class="spinner"></span>';
+    
+    try {
+      const resp = await fetch(CONFIG.SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ mouvements: unsync }),
+        headers: { 'Content-Type': 'text/plain' }
+      });
+      
+      const data = await resp.json();
+      
+      if (data.status === 'ok') {
+        this.state.queue = this.state.queue.map(x => ({ ...x, synced: true }));
+        localStorage.setItem('mvQueue', JSON.stringify(this.state.queue));
+        this.updateQueueCount();
+        this.showToast(`✓ ${unsync.length} mouvement(s) synchronisé(s)`);
+        this.vibrate([50, 100, 50]);
+      } else {
+        this.showToast('❌ Erreur : ' + (data.message || 'Inconnue'));
+        this.vibrate(300);
+      }
+    } catch(e) {
+      this.showToast('❌ Échec de synchronisation — données conservées');
+      this.vibrate(300);
+    }
+    
+    btn.disabled = false;
+    syncText.textContent = originalText;
+  },
+
+  // Pages
+  switchPage(page, btn) {
+    ['movement', 'catalogue', 'historique'].forEach(p => {
+      document.getElementById('page-' + p).classList.toggle('active', page === p);
+    });
+    
+    document.querySelectorAll('.nav-btn').forEach(b => {
+      b.classList.remove('active');
+    });
+    btn.classList.add('active');
+    
+    if (page === 'catalogue') {
+      this.renderCatalogue();
+    } else if (page === 'historique') {
+      this.loadHistory();
+    }
+    
+    this.vibrate(50);
+  },
+
+  // Catalogue
+  renderCatalogue() {
+    const categories = [...new Set(DATA.PRODUITS.map(p => p.cat))];
+    
+    // Tabs
+    const tabs = document.getElementById('catalogue-tabs');
+    tabs.innerHTML = categories.map(cat => `
+      <button class="catalogue-tab ${cat === this.state.currentCatFilter ? 'active' : ''}" 
+              onclick="app.setCatFilter('${cat}')">
+        ${cat}
+      </button>
+    `).join('');
+    
+    // Grid
+    this.renderCatalogueGrid();
+  },
+
+  renderCatalogueGrid(searchQuery = '') {
+    const grid = document.getElementById('catalogue-grid');
+    
+    let filtered = DATA.PRODUITS.filter(p => p.cat === this.state.currentCatFilter);
+    
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = DATA.PRODUITS.filter(p => 
+        p.ref.toLowerCase().includes(query) || 
+        p.nom.toLowerCase().includes(query)
+      );
+    }
+    
+    grid.innerHTML = filtered.map(p => {
+      const color = DATA.CAT_COLORS[p.cat] || '#00d4ff';
+      const icon = DATA.CAT_ICONS[p.cat] || '📦';
+      const nom = p.nom.length > 45 ? p.nom.substring(0, 45) + '…' : p.nom;
+      
+      return `
+        <div class="catalogue-card" onclick="app.selectFromCatalogue('${p.ref}')">
+          ${this.getPhotoHTML(p.ref, color, icon, '100%', '0', true)}
+          <div class="catalogue-body">
+            <div class="catalogue-ref">${p.ref}</div>
+            <div class="catalogue-nom">${nom}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
+
+  setCatFilter(cat) {
+    this.state.currentCatFilter = cat;
+    this.renderCatalogue();
+    this.vibrate(50);
+  },
+
+  searchCatalogue(query) {
+    this.renderCatalogueGrid(query);
+  },
+
+  selectFromCatalogue(ref) {
+    this.switchPage('movement', document.querySelector('.nav-btn'));
+    document.querySelector('.nav-btn').classList.add('active');
+    
+    // Fermer le sélecteur de liste s'il est ouvert
+    const listePicker = document.getElementById('liste-picker');
+    const btnListe = document.getElementById('btn-liste');
+    if (listePicker.classList.contains('open')) {
+      listePicker.classList.remove('open');
+      btnListe.classList.remove('active');
+    }
+    
+    // Réinitialiser les sélecteurs
+    document.getElementById('liste-cat').value = '';
+    document.getElementById('liste-prod').value = '';
+    document.getElementById('liste-prod').disabled = true;
+    
+    // Remplir la référence et rechercher
+    document.getElementById('ref-input').value = ref;
+    this.searchRef(ref);
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.showToast('✓ ' + ref + ' sélectionné');
+    this.vibrate(50);
+    
+    // Focus sur le champ de quantité pour une saisie rapide
+    setTimeout(() => {
+      document.getElementById('qty-input').focus();
+      document.getElementById('qty-input').select();
+    }, 300);
+  },
+
+  // Historique
+  setHistFilter(days, btn) {
+    this.state.histDaysFilter = days;
+    
+    document.querySelectorAll('.hist-filter-btn').forEach(b => {
+      b.classList.remove('active');
+    });
+    btn.classList.add('active');
+    
+    this.loadHistory();
+    this.vibrate(50);
+  },
+
+  async loadHistory() {
+    const content = document.getElementById('hist-content');
+    const operatorLabel = document.getElementById('hist-operator');
+    
+    if (!this.state.currentOperator) {
+      operatorLabel.textContent = '—';
+      content.innerHTML = '<div class="hist-empty">Sélectionnez un opérateur pour voir votre historique</div>';
+      return;
+    }
+    
+    operatorLabel.textContent = this.state.currentOperator;
+    content.innerHTML = '<div class="hist-empty">⏳ Chargement...</div>';
+    
+    try {
+      const url = `${CONFIG.SCRIPT_URL}?action=historique&operateur=${encodeURIComponent(this.state.currentOperator)}&days=${this.state.histDaysFilter}`;
+      const resp = await fetch(url);
+      const data = await resp.json();
+      
+      if (data.status !== 'ok' || !data.mouvements || data.mouvements.length === 0) {
+        content.innerHTML = '<div class="hist-empty">Aucun mouvement trouvé</div>';
+        return;
+      }
+      
+      // Grouper par date
+      const groups = {};
+      data.mouvements.forEach(m => {
+        const dateKey = m.date ? m.date.substring(0, 10) : 'Inconnu';
+        if (!groups[dateKey]) groups[dateKey] = [];
+        groups[dateKey].push(m);
+      });
+      
+      const dates = Object.keys(groups).sort().reverse();
+      const today = new Date().toLocaleDateString('fr-CA');
+      
+      content.innerHTML = dates.map(date => {
+        const items = groups[date];
+        const dateLabel = date === today ? "Aujourd'hui" : date;
+        
+        const itemsHTML = items.map(m => {
+          const typeColors = {
+            'Sortie': '#ff3366',
+            'Entrée Magasin': '#00ff88',
+            'Retour': '#00d4ff',
+            'Ajustement': '#ffb800',
+            'Transfert': '#a18cd1'
+          };
+          
+          const color = typeColors[m.type] || '#8b92a8';
+          
+          return `
+            <div class="hist-item">
+              <span class="hist-type-badge" style="background: ${color}20; color: ${color}">
+                ${m.type}
+              </span>
+              <div class="hist-info">
+                <div class="hist-ref">${m.ref} — ${(m.nom || '').substring(0, 30)}</div>
+                <div class="hist-meta">${m.projet || '—'} · ${m.heure || ''}</div>
+              </div>
+              <div class="hist-qty">${m.qte} ${m.unite || ''}</div>
+            </div>
+          `;
+        }).join('');
+        
+        return `
+          <div class="hist-group">
+            <div class="hist-date-label">📅 ${dateLabel} — ${items.length} mouvement(s)</div>
+            ${itemsHTML}
+          </div>
+        `;
+      }).join('');
+      
+    } catch(e) {
+      // Fallback local
+      const local = JSON.parse(localStorage.getItem('mvQueue') || '[]')
+        .filter(m => m.operateur === this.state.currentOperator)
+        .sort((a, b) => b.id - a.id);
+      
+      if (local.length === 0) {
+        content.innerHTML = '<div class="hist-empty">Aucun mouvement local</div>';
+        return;
+      }
+      
+      const groups = {};
+      local.forEach(m => {
+        const dateKey = m.date ? m.date.substring(0, 10) : 'Inconnu';
+        if (!groups[dateKey]) groups[dateKey] = [];
+        groups[dateKey].push(m);
+      });
+      
+      const dates = Object.keys(groups).sort().reverse();
+      
+      content.innerHTML = `
+        <div style="color: var(--warning); margin-bottom: 16px; text-align: center;">
+          ⚠️ Hors ligne — données locales uniquement
+        </div>
+      ` + dates.map(date => {
+        const items = groups[date];
+        
+        const itemsHTML = items.map(m => {
+          const typeColors = {
+            'Sortie': '#ff3366',
+            'Entrée Magasin': '#00ff88',
+            'Retour': '#00d4ff',
+            'Ajustement': '#ffb800',
+            'Transfert': '#a18cd1'
+          };
+          
+          const color = typeColors[m.type] || '#8b92a8';
+          
+          return `
+            <div class="hist-item">
+              <span class="hist-type-badge" style="background: ${color}20; color: ${color}">
+                ${m.type}
+              </span>
+              <div class="hist-info">
+                <div class="hist-ref">${m.ref} — ${(m.nom || '').substring(0, 30)}</div>
+                <div class="hist-meta">${m.projet || '—'} ${m.synced ? '✅' : '⏳'}</div>
+              </div>
+              <div class="hist-qty">${m.qte}</div>
+            </div>
+          `;
+        }).join('');
+        
+        return `
+          <div class="hist-group">
+            <div class="hist-date-label">📅 ${date} — ${items.length} mouvement(s)</div>
+            ${itemsHTML}
+          </div>
+        `;
+      }).join('');
+    }
+  },
+
+  sendEmail() {
+    const today = new Date().toLocaleDateString('fr-CA');
+    const local = JSON.parse(localStorage.getItem('mvQueue') || '[]')
+      .filter(m => m.operateur === this.state.currentOperator && 
+                   m.date && m.date.substring(0, 10) === today)
+      .sort((a, b) => a.id - b.id);
+    
+    if (local.length === 0) {
+      this.showToast("Aucun mouvement aujourd'hui");
+      return;
+    }
+    
+    const subject = encodeURIComponent(`Mouvements du ${today} — ${this.state.currentOperator}`);
+    let body = `Mouvements du ${today} — ${this.state.currentOperator}\n`;
+    body += '='.repeat(50) + '\n\n';
+    
+    local.forEach(m => {
+      const heure = m.date ? m.date.substring(11, 16) : '';
+      body += `${m.type.padEnd(18)} | ${m.ref.padEnd(10)} | ${String(m.qte).padEnd(6)} ${(m.uniteSaisie || '').padEnd(12)} | ${(m.projet || '—').padEnd(12)} | ${heure}\n`;
+    });
+    
+    body += '\n' + '='.repeat(50) + '\n';
+    body += `Total : ${local.length} mouvement(s)\n`;
+    body += '\nEnvoyé depuis Scan Entrepôt v2';
+    
+    const mailto = `mailto:${CONFIG.EMAIL_DEST}?subject=${subject}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
+  },
+
+  // Utils
+  getPhotoHTML(ref, color, icon, size, borderRadius, isCatalogue = false) {
+    const sizeStr = typeof size === 'number' ? size + 'px' : size;
+    
+    if (isCatalogue) {
+      return `
+        <img src="${CONFIG.PHOTO_BASE}${ref}.jpg" 
+             class="catalogue-photo"
+             onerror="this.outerHTML='<div class=catalogue-photo-placeholder style=background:${color}20>${icon}</div>'">
+      `;
+    }
+    
+    return `
+      <img src="${CONFIG.PHOTO_BASE}${ref}.jpg" 
+           class="panier-photo"
+           onerror="this.outerHTML='<div class=panier-photo-placeholder style=background:${color}20>${icon}</div>'">
+    `;
+  },
+
+  showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  },
+
+  vibrate(pattern) {
+    if (navigator.vibrate) {
+      navigator.vibrate(pattern);
+    }
+  }
+};
+
+// Initialiser l'app au chargement
+document.addEventListener('DOMContentLoaded', () => {
+  app.init();
+});
+</script>
+</body>
+</html>
