@@ -2857,6 +2857,14 @@ body {
         ✓ Synchroniser
       </button>
     </div>
+    
+    <!-- Queue bar -->
+    <div class="queue-bar">
+      <div class="queue-count">En attente : <strong id="panier-queue-count">0</strong></div>
+      <button class="btn-sync" id="panier-btn-sync" onclick="app.synchronize()">
+        <span id="panier-sync-text">Synchroniser</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -3261,8 +3269,8 @@ const app = {
   searchRef(val) {
     // Fermer la liste picker si ouverte
     const listePicker = document.getElementById('liste-picker');
-    if (listePicker && listePicker.classList.contains('active')) {
-      listePicker.classList.remove('active');
+    if (listePicker && listePicker.classList.contains('open')) {
+      listePicker.classList.remove('open');
     }
     
     const result = document.getElementById('ref-result');
@@ -3404,7 +3412,7 @@ const app = {
     refResult.style.display = 'none';
     
     if (listePicker) {
-      listePicker.classList.remove('active');
+      listePicker.classList.remove('open');
     }
     
     // Vider aussi le currentProd pour ne pas garder l'ancien produit
@@ -3613,7 +3621,7 @@ const app = {
     // Fermer la liste picker
     const listePicker = document.getElementById('liste-picker');
     if (listePicker) {
-      listePicker.classList.remove('active');
+      listePicker.classList.remove('open');
     }
     
     // Reset les champs
@@ -3858,6 +3866,12 @@ const app = {
   updateQueueCount() {
     const unsync = this.state.queue.filter(x => !x.synced).length;
     document.getElementById('queue-count').textContent = unsync;
+    
+    // Mettre à jour aussi dans l'onglet Panier
+    const panierQueueCount = document.getElementById('panier-queue-count');
+    if (panierQueueCount) {
+      panierQueueCount.textContent = unsync;
+    }
   },
 
   async synchronize() {
@@ -3870,10 +3884,17 @@ const app = {
     
     const btn = document.getElementById('btn-sync');
     const syncText = document.getElementById('sync-text');
+    const panierBtn = document.getElementById('panier-btn-sync');
+    const panierSyncText = document.getElementById('panier-sync-text');
     const originalText = syncText.textContent;
     
     btn.disabled = true;
     syncText.innerHTML = '<span class="spinner"></span>';
+    
+    if (panierBtn) {
+      panierBtn.disabled = true;
+      panierSyncText.innerHTML = '<span class="spinner"></span>';
+    }
     
     try {
       const resp = await fetch(CONFIG.SCRIPT_URL, {
@@ -3901,6 +3922,11 @@ const app = {
     
     btn.disabled = false;
     syncText.textContent = originalText;
+    
+    if (panierBtn) {
+      panierBtn.disabled = false;
+      panierSyncText.textContent = originalText;
+    }
   },
 
   // Pages
@@ -3983,25 +4009,19 @@ const app = {
   },
 
   selectFromCatalogue(ref) {
-    this.switchPage('movement', document.querySelector('.nav-btn'));
-    document.querySelector('.nav-btn').classList.add('active');
-    
-    // Fermer le sélecteur de liste s'il est ouvert
-    const listePicker = document.getElementById('liste-picker');
-    const btnListe = document.getElementById('btn-liste');
-    if (listePicker.classList.contains('open')) {
-      listePicker.classList.remove('open');
-      btnListe.classList.remove('active');
+    // Trouver le produit
+    const prod = DATA.PRODUITS.find(p => p.ref === ref);
+    if (!prod) {
+      this.showToast('⚠️ Produit introuvable');
+      return;
     }
     
-    // Réinitialiser les sélecteurs
-    document.getElementById('liste-cat').value = '';
-    document.getElementById('liste-prod').value = '';
-    document.getElementById('liste-prod').disabled = true;
-    
-    // Remplir la référence et rechercher
-    document.getElementById('ref-input').value = ref;
-    this.searchRef(ref);
+    // Ouvrir directement le modal de confirmation avec quantité 1
+    this.state.currentProd = prod;
+    this.state.currentUniteMode = 'stock';
+    this.openConfirmProduct(prod, 1, '');
+    this.vibrate(50);
+  },
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
     this.showToast('✓ ' + ref + ' sélectionné');
