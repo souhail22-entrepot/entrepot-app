@@ -2814,6 +2814,28 @@ body {
       </div>
     </div>
 
+    <div class="queue-bar">
+      <div class="queue-count">En attente : <strong id="queue-count">0</strong></div>
+      <button class="btn-sync" id="btn-sync" onclick="app.synchronize()">
+        <span id="sync-text">Synchroniser</span>
+      </button>
+    </div>
+    
+    <!-- Message pour aller scanner -->
+    <div class="card" style="text-align: center; padding: 40px 20px; background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-input) 100%);">
+      <div style="font-size: 48px; margin-bottom: 16px;">📷</div>
+      <div style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Prêt à scanner</div>
+      <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;">Allez dans l'onglet "Scan" pour ajouter des produits</div>
+      <button class="btn-primary" onclick="app.switchPage('scan', document.querySelectorAll('.nav-btn')[1])">
+        📷 Aller scanner
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE SCAN -->
+<div class="page" id="page-scan">
+  <div class="container">
     <!-- Ajouter un article -->
     <div class="card">
       <div class="card-title">Ajouter un article</div>
@@ -2873,9 +2895,9 @@ body {
     </div>
 
     <div class="queue-bar">
-      <div class="queue-count">En attente : <strong id="queue-count">0</strong></div>
-      <button class="btn-sync" id="btn-sync" onclick="app.synchronize()">
-        <span id="sync-text">Synchroniser</span>
+      <div class="queue-count">En attente : <strong id="scan-queue-count">0</strong></div>
+      <button class="btn-sync" id="scan-btn-sync" onclick="app.synchronize()">
+        <span id="scan-sync-text">Synchroniser</span>
       </button>
     </div>
   </div>
@@ -2963,6 +2985,10 @@ body {
   <button class="nav-btn active" onclick="app.switchPage('movement', this)">
     <span>📦</span>
     Mouvement
+  </button>
+  <button class="nav-btn" onclick="app.switchPage('scan', this)">
+    <span>📷</span>
+    Scan
   </button>
   <button class="nav-btn" onclick="app.switchPage('catalogue', this)">
     <span>🖼️</span>
@@ -3974,12 +4000,19 @@ const app = {
   updateQueueCount() {
     const unsync = this.state.queue.filter(x => !x.synced).length;
     
+    // Movement page
     const queueCount = document.getElementById('queue-count');
     if (queueCount) {
       queueCount.textContent = unsync;
     }
     
-    // Mettre à jour aussi dans l'onglet Panier
+    // Scan page
+    const scanQueueCount = document.getElementById('scan-queue-count');
+    if (scanQueueCount) {
+      scanQueueCount.textContent = unsync;
+    }
+    
+    // Panier page
     const panierQueueCount = document.getElementById('panier-queue-count');
     if (panierQueueCount) {
       panierQueueCount.textContent = unsync;
@@ -3996,6 +4029,8 @@ const app = {
     
     const btn = document.getElementById('btn-sync');
     const syncText = document.getElementById('sync-text');
+    const scanBtn = document.getElementById('scan-btn-sync');
+    const scanSyncText = document.getElementById('scan-sync-text');
     const panierBtn = document.getElementById('panier-btn-sync');
     const panierSyncText = document.getElementById('panier-sync-text');
     
@@ -4008,6 +4043,11 @@ const app = {
     
     btn.disabled = true;
     syncText.innerHTML = '<span class="spinner"></span>';
+    
+    if (scanBtn && scanSyncText) {
+      scanBtn.disabled = true;
+      scanSyncText.innerHTML = '<span class="spinner"></span>';
+    }
     
     if (panierBtn && panierSyncText) {
       panierBtn.disabled = true;
@@ -4041,6 +4081,11 @@ const app = {
     btn.disabled = false;
     syncText.textContent = originalText;
     
+    if (scanBtn && scanSyncText) {
+      scanBtn.disabled = false;
+      scanSyncText.textContent = originalText;
+    }
+    
     if (panierBtn && panierSyncText) {
       panierBtn.disabled = false;
       panierSyncText.textContent = originalText;
@@ -4049,7 +4094,7 @@ const app = {
 
   // Pages
   switchPage(page, btn) {
-    ['movement', 'catalogue', 'panier', 'historique'].forEach(p => {
+    ['movement', 'scan', 'catalogue', 'panier', 'historique'].forEach(p => {
       document.getElementById('page-' + p).classList.toggle('active', page === p);
     });
     
@@ -4077,10 +4122,18 @@ const app = {
     const tabs = document.getElementById('catalogue-tabs');
     tabs.innerHTML = categories.map(cat => `
       <button class="catalogue-tab ${cat === this.state.currentCatFilter ? 'active' : ''}" 
-              onclick="app.setCatFilter('${cat}')">
+              data-category="${cat.replace(/"/g, '&quot;')}">
         ${cat}
       </button>
     `).join('');
+    
+    // Ajouter les event listeners pour les clics
+    tabs.querySelectorAll('.catalogue-tab').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const category = e.currentTarget.dataset.category;
+        this.setCatFilter(category);
+      });
+    });
     
     // Améliorer le comportement tactile : détecter clic vs swipe
     let startX = 0;
