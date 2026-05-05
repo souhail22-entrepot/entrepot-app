@@ -2622,10 +2622,6 @@ body {
   </div>
   <div class="header-actions">
     <span id="status-badge" class="badge badge-offline">Hors ligne</span>
-    <button class="header-panier-btn" onclick="app.goToPanier()" title="Voir le panier">
-      🛒
-      <span class="header-panier-badge" id="header-panier-badge"></span>
-    </button>
     <button class="theme-toggle" onclick="app.toggleTheme()" title="Changer de thème">
       <span id="theme-icon">🌙</span>
     </button>
@@ -2995,7 +2991,8 @@ const app = {
     theme: localStorage.getItem('theme') || 'dark',
     tempProduct: null,
     tempQty: null,
-    tempObs: null
+    tempObs: null,
+    previewOnly: false
   },
 
   init() {
@@ -3780,6 +3777,12 @@ const app = {
   confirmCart() {
     this.closeModal();
     
+    // Si c'est juste un aperçu (depuis bouton Aperçu), on ne fait rien d'autre
+    if (this.state.previewOnly) {
+      this.state.previewOnly = false; // Reset le flag
+      return;
+    }
+    
     const now = new Date().toLocaleString('fr-CA', {
       timeZone: 'America/Toronto',
       hour12: false
@@ -4337,7 +4340,8 @@ const app = {
       return;
     }
     
-    // Utiliser la fonction existante openPreview
+    // Mode aperçu seulement - ne pas enregistrer au clic sur Confirmer
+    this.state.previewOnly = true;
     this.openPreview();
   },
 
@@ -4347,7 +4351,8 @@ const app = {
       return;
     }
     
-    // Ouvrir l'aperçu avant de synchroniser
+    // Mode synchronisation - enregistrer au clic sur Confirmer
+    this.state.previewOnly = false;
     this.openPreview();
   }
 };
