@@ -1055,14 +1055,17 @@ body {
 
 /* MODAL CONFIRMATION PRODUIT */
 .modal-confirm {
-  max-height: 85vh;
+  max-height: 75vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-confirm-photo {
   width: 100%;
-  max-width: 280px;
-  height: 200px;
-  margin: 0 auto 20px;
+  max-width: 220px;
+  height: 160px;
+  margin: 0 auto 16px;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 8px 32px var(--shadow);
@@ -1084,24 +1087,24 @@ body {
 }
 
 .modal-confirm-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   line-height: 1.3;
 }
 
 .modal-confirm-ref {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   font-family: var(--font-mono);
 }
 
 .modal-confirm-qty {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .modal-confirm-qty label {
@@ -1205,7 +1208,7 @@ body {
 }
 
 .modal-confirm-obs {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .modal-confirm-obs label {
@@ -2643,7 +2646,7 @@ body {
 </div>
 
 <!-- SESSION BAR -->
-<div class="session-bar" id="session-bar" style="display: none;">
+<div class="session-bar" id="session-bar" style="display: none; visibility: hidden; opacity: 0; z-index: -1;">
   <div class="session-name">
     <span>👤</span>
     <span id="session-name-text"></span>
@@ -3162,7 +3165,13 @@ const app = {
       this.state.currentOperator = operator.nom;
       document.getElementById('pin-screen').classList.add('hidden');
       document.getElementById('header').style.display = 'flex';
-      document.getElementById('session-bar').style.display = 'flex';
+      
+      const sessionBar = document.getElementById('session-bar');
+      sessionBar.style.display = 'flex';
+      sessionBar.style.visibility = 'visible';
+      sessionBar.style.opacity = '1';
+      sessionBar.style.zIndex = '';
+      
       document.getElementById('bottom-nav').style.display = 'flex';
       document.getElementById('session-name-text').textContent = operator.nom;
       
@@ -3212,7 +3221,13 @@ const app = {
     
     document.getElementById('pin-screen').classList.remove('hidden');
     document.getElementById('header').style.display = 'none';
-    document.getElementById('session-bar').style.display = 'none';
+    
+    const sessionBar = document.getElementById('session-bar');
+    sessionBar.style.display = 'none';
+    sessionBar.style.visibility = 'hidden';
+    sessionBar.style.opacity = '0';
+    sessionBar.style.zIndex = '-1';
+    
     document.getElementById('bottom-nav').style.display = 'none';
     document.getElementById('pin-error').textContent = '';
     
