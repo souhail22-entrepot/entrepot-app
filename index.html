@@ -4032,17 +4032,6 @@ const app = {
     this.openConfirmProduct(prod, 1, '');
     this.vibrate(50);
   },
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.showToast('✓ ' + ref + ' sélectionné');
-    this.vibrate(50);
-    
-    // Focus sur le champ de quantité pour une saisie rapide
-    setTimeout(() => {
-      document.getElementById('qty-input').focus();
-      document.getElementById('qty-input').select();
-    }, 300);
-  },
 
   // Historique
   setHistFilter(days, btn) {
