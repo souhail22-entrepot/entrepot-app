@@ -855,6 +855,7 @@ body {
 }
 
 .nav-btn {
+  position: relative;
   flex: 1;
   padding: 12px 0;
   border: none;
@@ -2803,21 +2804,6 @@ body {
       <button class="btn-primary" onclick="app.addToCart()">+ Ajouter au panier</button>
     </div>
 
-    <!-- Panier -->
-    <div class="card">
-      <div class="panier-header">
-        <div class="card-title" style="margin: 0;">Panier</div>
-        <span class="panier-badge" id="panier-badge">0 article</span>
-      </div>
-      <div id="panier-liste">
-        <div class="panier-empty">Aucun article — scannez pour commencer</div>
-      </div>
-    </div>
-
-    <button class="btn-primary" id="btn-preview" onclick="app.openPreview()" disabled>
-      Voir l'aperçu et confirmer →
-    </button>
-
     <div class="queue-bar">
       <div class="queue-count">En attente : <strong id="queue-count">0</strong></div>
       <button class="btn-sync" id="btn-sync" onclick="app.synchronize()">
@@ -3399,6 +3385,21 @@ const app = {
 
   // Scanner
   startScanner() {
+    // Cacher et réinitialiser la liste et le résultat
+    const refResult = document.getElementById('ref-result');
+    const listePicker = document.getElementById('liste-picker');
+    
+    refResult.textContent = '';
+    refResult.className = 'ref-result';
+    refResult.style.display = 'none';
+    
+    if (listePicker) {
+      listePicker.classList.remove('active');
+    }
+    
+    // Vider aussi le currentProd pour ne pas garder l'ancien produit
+    this.state.currentProd = null;
+    
     document.getElementById('scanner-overlay').classList.add('active');
     
     const codeReader = new ZXing.BrowserMultiFormatReader();
@@ -3412,6 +3413,10 @@ const app = {
           const code = result.getText();
           this.stopScanner();
           document.getElementById('ref-input').value = code;
+          
+          // Réafficher ref-result pour le nouveau scan
+          refResult.style.display = 'block';
+          
           this.searchRef(code);
           this.showToast('✓ Code scanné : ' + code);
           this.vibrate([50, 100, 50]);
@@ -3643,41 +3648,9 @@ const app = {
   },
 
   renderCart() {
-    const liste = document.getElementById('panier-liste');
-    const badge = document.getElementById('panier-badge');
-    const btn = document.getElementById('btn-preview');
-    
-    badge.textContent = this.state.cart.length + ' article' + (this.state.cart.length > 1 ? 's' : '');
-    
-    if (this.state.cart.length === 0) {
-      liste.innerHTML = '<div class="panier-empty">Aucun article — scannez pour commencer</div>';
-      btn.disabled = true;
-      return;
-    }
-    
-    liste.innerHTML = this.state.cart.map(item => {
-      const color = DATA.CAT_COLORS[item.cat] || '#00d4ff';
-      const icon = DATA.CAT_ICONS[item.cat] || '📦';
-      const nom = item.nom.length > 40 ? item.nom.substring(0, 40) + '…' : item.nom;
-      
-      return `
-        <div class="panier-item">
-          ${this.getPhotoHTML(item.ref, color, icon, 50, '10px')}
-          <div class="panier-info">
-            <div class="panier-nom">${nom}</div>
-            <div class="panier-meta">${item.ref}${item.obs ? ' · ' + item.obs : ''}</div>
-          </div>
-          <div class="panier-qty-controls">
-            <button class="panier-qty-btn panier-qty-minus" onclick="app.updateCartQty(${item.id}, -1)" title="Diminuer">−</button>
-            <div class="panier-qty-value">${item.qte}</div>
-            <button class="panier-qty-btn panier-qty-plus" onclick="app.updateCartQty(${item.id}, 1)" title="Augmenter">+</button>
-          </div>
-          <button class="btn-delete" onclick="app.removeFromCart(${item.id})" title="Supprimer">×</button>
-        </div>
-      `;
-    }).join('');
-    
-    btn.disabled = false;
+    // Section panier supprimée de l'onglet Mouvement
+    // Tout se passe maintenant dans l'onglet Panier
+    return;
   },
 
   // Modal
