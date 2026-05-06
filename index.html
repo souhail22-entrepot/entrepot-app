@@ -2835,18 +2835,18 @@ body {
       <div class="card-title">📷 Scanner le produit</div>
       
       <!-- Zone de scan principale -->
-      <div style="margin-bottom: 20px;">
-        <button class="btn-camera" onclick="app.startScanner()" style="width: 100%; padding: 60px 20px; font-size: 18px; font-weight: 600; background: linear-gradient(135deg, var(--accent) 0%, #00b8d4 100%); color: white; border: none; border-radius: 16px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 12px; box-shadow: 0 8px 32px rgba(0, 212, 255, 0.3); transition: transform 0.2s;">
-          <span style="font-size: 64px;">📷</span>
+      <div style="margin-bottom: 16px;">
+        <button class="btn-camera" onclick="app.startScanner()" style="width: 100%; padding: 32px 20px; font-size: 16px; font-weight: 600; background: linear-gradient(135deg, var(--accent) 0%, #00b8d4 100%); color: white; border: none; border-radius: 16px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: 0 8px 32px rgba(0, 212, 255, 0.3); transition: transform 0.2s;">
+          <span style="font-size: 48px;">📷</span>
           <span>Ouvrir la caméra</span>
-          <span style="font-size: 14px; opacity: 0.9;">Ou saisir manuellement ci-dessous</span>
+          <span style="font-size: 13px; opacity: 0.9;">Ou saisir manuellement ci-dessous</span>
         </button>
       </div>
       
       <!-- Saisie manuelle -->
       <div class="field">
         <label>Saisie manuelle</label>
-        <input type="text" id="ref-input" placeholder="MAT-001" oninput="app.searchRef(this.value)" autocomplete="off" style="font-size: 16px; padding: 14px;">
+        <input type="text" id="ref-input" placeholder="MAT-001" oninput="app.searchRef(this.value)" autocomplete="off" style="font-size: 15px; padding: 12px;">
         <div id="ref-result" class="ref-result"></div>
       </div>
 
@@ -2861,7 +2861,7 @@ body {
       </div>
 
       <!-- Toggle unité -->
-      <div class="unite-toggle" id="unite-toggle">
+      <div class="unite-toggle" id="unite-toggle" style="margin-bottom: 16px;">
         <div class="unite-label">Unité de saisie</div>
         <div class="unite-btns">
           <button class="unite-btn active" id="btn-unite-stock" onclick="app.setUnite('stock')">
@@ -2875,13 +2875,13 @@ body {
       </div>
 
       <!-- Observations -->
-      <div class="field">
+      <div class="field" style="margin-bottom: 16px;">
         <label>Observations (optionnel)</label>
         <input type="text" id="obs-input" placeholder="Ex: Produit endommagé" autocomplete="off">
       </div>
 
       <!-- Bouton ajouter -->
-      <button class="btn-primary" onclick="app.addToCart()" style="font-size: 16px; padding: 16px;">
+      <button class="btn-primary" onclick="app.addToCart()" style="font-size: 15px; padding: 14px; font-weight: 700;">
         ✓ Ajouter au panier
       </button>
     </div>
