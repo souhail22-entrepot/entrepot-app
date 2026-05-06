@@ -2831,28 +2831,27 @@ body {
 <div class="page" id="page-scan">
   <div class="container">
     <!-- Scanner avec caméra -->
-    <div class="card">
-      <div class="card-title">📷 Scanner le produit</div>
+    <div class="card" style="padding: 16px;">
+      <div class="card-title" style="margin-bottom: 12px;">📷 Scanner</div>
       
-      <!-- Zone de scan principale -->
-      <div style="margin-bottom: 16px;">
-        <button class="btn-camera" onclick="app.startScanner()" style="width: 100%; padding: 32px 20px; font-size: 16px; font-weight: 600; background: linear-gradient(135deg, var(--accent) 0%, #00b8d4 100%); color: white; border: none; border-radius: 16px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: 0 8px 32px rgba(0, 212, 255, 0.3); transition: transform 0.2s;">
-          <span style="font-size: 48px;">📷</span>
-          <span>Ouvrir la caméra</span>
-          <span style="font-size: 13px; opacity: 0.9;">Ou saisir manuellement ci-dessous</span>
+      <!-- Zone de scan principale - ULTRA COMPACTÉ -->
+      <div style="margin-bottom: 12px;">
+        <button class="btn-camera" onclick="app.startScanner()" style="width: 100%; padding: 20px 16px; font-size: 15px; font-weight: 600; background: linear-gradient(135deg, var(--accent) 0%, #00b8d4 100%); color: white; border: none; border-radius: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3); transition: transform 0.2s;">
+          <span style="font-size: 36px;">📷</span>
+          <span style="font-size: 14px;">Ouvrir la caméra</span>
         </button>
       </div>
       
       <!-- Saisie manuelle -->
-      <div class="field">
-        <label>Saisie manuelle</label>
-        <input type="text" id="ref-input" placeholder="MAT-001" oninput="app.searchRef(this.value)" autocomplete="off" style="font-size: 15px; padding: 12px;">
+      <div class="field" style="margin-bottom: 12px;">
+        <label style="font-size: 12px; margin-bottom: 6px;">Saisie manuelle</label>
+        <input type="text" id="ref-input" placeholder="MAT-001" oninput="app.searchRef(this.value)" autocomplete="off" style="font-size: 14px; padding: 10px;">
         <div id="ref-result" class="ref-result"></div>
       </div>
 
       <!-- Quantité -->
-      <div class="field">
-        <label>Quantité</label>
+      <div class="field" style="margin-bottom: 12px;">
+        <label style="font-size: 12px; margin-bottom: 6px;">Quantité</label>
         <div class="qty-row">
           <button class="qty-btn" onclick="app.changeQty(-1)">−</button>
           <input type="number" id="qty-input" class="qty-input" value="1" min="0.5" step="0.5">
@@ -2861,8 +2860,8 @@ body {
       </div>
 
       <!-- Toggle unité -->
-      <div class="unite-toggle" id="unite-toggle" style="margin-bottom: 16px;">
-        <div class="unite-label">Unité de saisie</div>
+      <div class="unite-toggle" id="unite-toggle" style="margin-bottom: 12px;">
+        <div class="unite-label" style="font-size: 11px; margin-bottom: 6px;">Unité de saisie</div>
         <div class="unite-btns">
           <button class="unite-btn active" id="btn-unite-stock" onclick="app.setUnite('stock')">
             <span id="lbl-unite-stock">Caisse</span>
@@ -2875,37 +2874,37 @@ body {
       </div>
 
       <!-- Observations -->
-      <div class="field" style="margin-bottom: 16px;">
-        <label>Observations (optionnel)</label>
-        <input type="text" id="obs-input" placeholder="Ex: Produit endommagé" autocomplete="off">
+      <div class="field" style="margin-bottom: 12px;">
+        <label style="font-size: 12px; margin-bottom: 6px;">Observations (optionnel)</label>
+        <input type="text" id="obs-input" placeholder="Ex: Produit endommagé" autocomplete="off" style="font-size: 14px; padding: 10px;">
       </div>
 
       <!-- Bouton ajouter -->
-      <button class="btn-primary" onclick="app.addToCart()" style="font-size: 15px; padding: 14px; font-weight: 700;">
+      <button class="btn-primary" onclick="app.addToCart()" style="font-size: 15px; padding: 12px; font-weight: 700;">
         ✓ Ajouter au panier
       </button>
     </div>
 
     <!-- OU BIEN - Séparateur -->
-    <div style="text-align: center; margin: 30px 0; position: relative;">
+    <div style="text-align: center; margin: 20px 0; position: relative;">
       <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border);"></div>
-      <span style="position: relative; background: var(--bg-primary); padding: 0 20px; color: var(--text-muted); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;">OU BIEN</span>
+      <span style="position: relative; background: var(--bg-primary); padding: 0 16px; color: var(--text-muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;">OU BIEN</span>
     </div>
 
     <!-- Liste picker -->
-    <div class="card">
-      <div class="card-title">📋 Sélectionner dans la liste</div>
+    <div class="card" style="padding: 16px;">
+      <div class="card-title" style="margin-bottom: 12px;">📋 Sélectionner</div>
       
-      <div class="field">
-        <label>Catégorie</label>
-        <select id="liste-cat" onchange="app.listeChangeCat()" style="font-size: 15px; padding: 14px;">
+      <div class="field" style="margin-bottom: 12px;">
+        <label style="font-size: 12px; margin-bottom: 6px;">Catégorie</label>
+        <select id="liste-cat" onchange="app.listeChangeCat()" style="font-size: 14px; padding: 10px;">
           <option value="">— Choisir une catégorie —</option>
         </select>
       </div>
       
-      <div class="field">
-        <label>Produit</label>
-        <select id="liste-prod" onchange="app.listeChoixProduit()" disabled style="font-size: 15px; padding: 14px;">
+      <div class="field" style="margin-bottom: 0;">
+        <label style="font-size: 12px; margin-bottom: 6px;">Produit</label>
+        <select id="liste-prod" onchange="app.listeChoixProduit()" disabled style="font-size: 14px; padding: 10px;">
           <option value="">— Choisir un produit —</option>
         </select>
       </div>
