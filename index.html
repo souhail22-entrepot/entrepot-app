@@ -2329,17 +2329,18 @@ body {
 /* BADGE NAVIGATION PANIER */
 .nav-badge {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: 6px;
+  right: 6px;
   background: #ff4444;
   color: white;
-  border-radius: 10px;
-  padding: 2px 6px;
-  font-size: 10px;
+  border-radius: 8px;
+  padding: 1px 4px;
+  font-size: 9px;
   font-weight: 700;
-  min-width: 16px;
+  min-width: 14px;
   text-align: center;
   display: none;
+  line-height: 1.4;
 }
 
 .nav-badge:not(:empty) {
@@ -2749,7 +2750,7 @@ body {
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">Aperçu du panier</div>
+    <div class="modal-title" id="modal-title">Aperçu du panier</div>
     <div class="modal-subtitle" id="modal-subtitle"></div>
     <div class="modal-session" id="modal-session"></div>
     <div class="modal-items" id="modal-items"></div>
@@ -3881,6 +3882,14 @@ const app = {
           <div class="modal-session-value">${today}</div>
         </div>
       `;
+    }
+    
+    // Titre selon le mode
+    const modalTitle = document.getElementById('modal-title');
+    if (this.state.previewOnly) {
+      modalTitle.textContent = 'Aperçu du panier';
+    } else {
+      modalTitle.textContent = 'Synchronisation';
     }
     
     document.getElementById('modal-subtitle').textContent = 
